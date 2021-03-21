@@ -1,0 +1,52 @@
+apply plugin: "com.android.library"
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+        archivesBaseName="NXTPlugin"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    afterEvaluate {
+        assembleDebug.finalizedBy(exportJar)
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs/android-support-v4.jar')
+    compile files('libs/lejosclasses.jar')
+    compile files('libs/bluecove.jar')
+    compile files('libs/pccomm.jar')
+    compile files('libs/pctools.jar')
+    testImplementation 'junit:junit:4.12'
+    api 'com.android.support:design:28.0.0'
+    compile files('libs/classes.jar')
+}
+
+
+task exportJar(type: Copy) {
+    from('build/intermediates/packaged-classes/debug/classes.jar')
+    include('classes.jar')
+    into('../../../SPEAREDV2.0/Assets/Plugins/Android')
+    rename('classes.jar', 'NXTBluetoothConnPlugin.jar')
+}
+task deleteOldJar(type: Delete) {
+    delete '../../../SPEAREDV2.0/Assets/Plugins/Android/NXTBluetoothConnPlugin.jar'
+}
+exportJar.dependsOn(deleteOldJar)

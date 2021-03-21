@@ -1,0 +1,70 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+package <#= PackageName() #>;
+import java.io.IOException;
+
+import lejos.nxt.Button;
+import lejos.robotics.RegulatedMotor;
+import lejos.robotics.navigation.DifferentialPilot;
+import lejos.robotics.navigation.Navigator;
+import lejos.robotics.navigation.Waypoint;
+import lejos.util.PilotProps;
+
+public class <#= ProgramName() #> {
+
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		PilotProps pp = new PilotProps();
+		pp.loadPersistentValues();
+		float wheelDiameter = Float.parseFloat(pp.getProperty(PilotProps.KEY_WHEELDIAMETER, "4.00"));
+		float trackWidth = Float.parseFloat(pp.getProperty(PilotProps.KEY_TRACKWIDTH, "10"));
+		RegulatedMotor leftMotor = PilotProps.getMotor(pp.getProperty(PilotProps.KEY_LEFTMOTOR, "B"));
+		RegulatedMotor rightMotor = PilotProps.getMotor(pp.getProperty(PilotProps.KEY_RIGHTMOTOR, "C"));
+		boolean reverse = Boolean.parseBoolean(pp.getProperty(PilotProps.KEY_REVERSE,"true"));
+
+		System.out.println("Any button to start");
+		Button.waitForAnyPress();
+		
+		DifferentialPilot p = new DifferentialPilot(wheelDiameter, trackWidth, leftMotor, rightMotor, reverse);
+		Navigator nav = new Navigator(p);
+        /// Programm Start
+<# foreach (Statement s in program.statements){ #>
+<#        if (!(s is LejosMoveStatement)){ #>
+            nav.followPath();
+            nav = new Navigator(p);
+<#        }#>
+<#        if (s is LejosMoveStatement){ #><#var m = (LejosMoveStatement)s;#>
+        nav.addWaypoint(new Waypoint(<#=m.x #>,<#=m.z#>));
+<#        } else { #>
+        /// Ignored Command
+<#        }#>
+<#}#>
+        /// Programm End
+        nav.followPath();
+		System.out.println("Any button to halt");
+		Button.waitForAnyPress();
+	}
+}
+
+<#+ private string packageName;#>
+<#+ protected virtual string PackageName() { return this.packageName; } #>
+<#+ public void SetPackageName(string packageName) { this.packageName = packageName; } #>
+
+<#+ private string programName;#>
+<#+ protected virtual string ProgramName() { return this.programName; } #>
+<#+ public void SetProgramName(string programName) { this.programName = programName; } #>
+
+<#+ private Program program;#>
+<#+ protected virtual Program Program() { return this.program; } #>
+<#+ public void SetProgram(Program program) { this.program = program; } #>
+
+<#+ private float wheelDiameter;#>
+<#+ protected virtual float WheelDiameter() { return this.wheelDiameter; } #>
+<#+ public void SetWheelDiameter(float wheelDiameter) { this.wheelDiameter = wheelDiameter; } #>
+
+<#+ private float trackWidth;#>
+<#+ protected virtual float TrackWidth() { return this.trackWidth; } #>
+<#+ public void SetTrackWidth(float trackWidth) { this.trackWidth = trackWidth; } #>
