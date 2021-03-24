@@ -4,7 +4,7 @@ In this repository, we store the public versions of the application that was dev
 - Unity 2019.3.0f6
 - Android development tools
 - Windows SDK (in case you want to build for HoloLens)
-## Geting started
+## Getting started
 - Clone this repository
 - Open this folder with unity: SPEAREDV2.0
 - You can now build the application for your phone using the unity build (alternatively you can also use 'Make and Run' to deploy after build to your phone)
@@ -15,3 +15,10 @@ In this repository, we store the public versions of the application that was dev
   - If the program is started on the robot you can connect to the Lego Mindstorms NXT robot via bluetooth
 - If you want to program the 'Grab and Drop' scenario you can open it when the app has startet
 - Notice for the latter two cases to reset after you have simulated ('Simulate') or executed ('Make and Run') one run. You can reset by presening the related button in the top left corner
+## How to install the server
+To install the server consider the following repository: https://github.com/VARobot-PG/server
+It is needed for cloud compilation and physics simulation for the dobot magician system
+## Where can i found the orginal approach SPEARED (V1)
+You can found it on a special branch in this repository: 
+https://github.com/VARobot-PG/application/tree/original_work
+(here is also the old version of the server and webeditor included)
