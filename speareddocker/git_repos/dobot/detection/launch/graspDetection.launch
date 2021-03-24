@@ -1,0 +1,42 @@
+<launch>
+  
+  <group>
+	 <node name="LoadGraspDetection" pkg="detection" type="graspPointDetection" args="LoadGraspDetection pickUpLeft" respawn="false" output="log"/>
+	 <param name="/LoadGraspDetection/startX" value="0.0"/>
+	 <param name="/LoadGraspDetection/startY" value="0.0"/>
+	 <param name="/LoadGraspDetection/startZ" value="0.015"/>
+	 <param name="/LoadGraspDetection/endX" value="0.2"/>
+	 <param name="/LoadGraspDetection/endY" value="0.35"/>
+	 <param name="/LoadGraspDetection/endZ" value="0.15"/>
+	 <param name="/LoadGraspDetection/colorSegmentation" value="false"/>
+	 <param name="/LoadGraspDetection/backgroundFilterThreshold" value="0.0"/>
+	 <param name="/LoadGraspDetection/detectTruckRotation" value="false"/>
+	 <param name="/LoadGraspDetection/radius" value="0.025"/>
+	 <param name="/LoadGraspDetection/maxClusterSize" value="3000"/>
+	 <param name="/LoadGraspDetection/cameraTopic" value="kinect2_jetson/hd/points"/>
+	 
+	 <node name="graspPointBuffer" pkg="detection" type="graspPointBuffer" args="LoadGraspDetection true 10" respawn="false" output="log"/>
+  </group>
+
+  <group>
+	 <node name="RailGraspDetection" pkg="detection" type="graspPointDetection" args="RailGraspDetection pickupRight" respawn="false" output="log"/>
+	 <param name="/RailGraspDetection/startX" value="-0.2"/>
+	 <param name="/RailGraspDetection/startY" value="0.0"/>
+	 <param name="/RailGraspDetection/startZ" value="0.005"/>
+	 <param name="/RailGraspDetection/endX" value="0.1"/>
+	 <param name="/RailGraspDetection/endY" value="0.1"/>
+	 <param name="/RailGraspDetection/endZ" value="0.15"/>
+	 <param name="/RailGraspDetection/colorSegmentation" value="false"/>
+	 <param name="/RailGraspDetection/backgroundColor/r" value="0"/>
+	 <param name="/RailGraspDetection/backgroundColor/g" value="0"/>
+	 <param name="/RailGraspDetection/backgroundColor/b" value="0"/>
+	 <param name="/RailGraspDetection/backgroundFilterThreshold" value="20.0"/>
+	 
+	 <param name="/RailGraspDetection/radius" value="0.025"/>
+	 <param name="/RailGraspDetection/maxClusterSize" value="10000"/>
+	 <param name="/RailGraspDetection/detectTruckRotation" value="false"/>
+	 <param name="/RailGraspDetection/cameraTopic" value="kinect2_xavier/hd/points"/>
+	 
+	 <node name="graspPointBuffer2" pkg="detection" type="graspPointBuffer" args="RailGraspDetection true 6" respawn="false" output="log"/>
+  </group> 
+</launch>

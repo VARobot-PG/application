@@ -1,0 +1,117 @@
+<?xml version='1.0'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="dobot">
+	<!-- Created on: March, 2019 Author: Philip Frieling -->
+	
+	<xacro:include filename="$(find dobot_description)/urdf/dobot_parameters.xacro" />
+	<xacro:include filename="$(find dobot_description)/urdf/dobot_functions.xacro" />
+	
+	<!--
+	<link name="world"/>-->
+	
+	<link name="${DobotName}">
+		<visual name="stand_vis">
+			<origin rpy="0 -0.0 0" xyz="0 0 0" />
+			<geometry>
+				<mesh filename="package://dobot_description/meshes/stand.dae" scale="1 1 1" />
+			</geometry>
+		</visual>
+	</link>
+	
+	<link name="${DobotName}_base_link">
+		<visual name="base_vis">
+			<origin rpy="0 -0.0 0" xyz="0 0 0" />
+			<geometry>
+				<mesh filename="package://dobot_description/meshes/base.dae" scale="1 1 1" />
+			</geometry>
+		</visual>
+	</link>
+	<joint name="${DobotName}_base_joint" type="revolute">
+		<parent link="${DobotName}" />
+		<child link="${DobotName}_base_link" />
+		<origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+		<axis xyz="0 0 1" />
+		<dynamics damping="0.5" friction="0.5"/>
+		<limit lower="${-PI}" upper="${PI}" effort="5" velocity="0.5" />
+	</joint>
+	
+	<link name="${DobotName}_shoulder_link">
+		<visual name="base_vis">
+			<origin rpy="0 -0.0 0" xyz="0 0 0" />
+			<geometry>
+				<mesh filename="package://dobot_description/meshes/shoulder.dae" scale="1 1 1" />
+			</geometry>
+		</visual>
+	</link>
+	<joint name="${DobotName}_shoulder_joint" type="revolute">
+		<parent link="${DobotName}_base_link" />
+		<child link="${DobotName}_shoulder_link" />
+		<origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.082477"/>
+		<axis xyz="1 0 0" />
+		<dynamics damping="0.5" friction="0.5"/>
+		<limit lower="${-PI}" upper="${PI}" effort="5" velocity="0.5" />
+	</joint>
+	
+
+	<link name="${DobotName}_elbow_link">
+		<visual name="base_vis">
+			<origin rpy="0 -0.0 0" xyz="0 0 0" />
+			<geometry>
+				<mesh filename="package://dobot_description/meshes/elbow.dae" scale="1 1 1" />
+			</geometry>
+		</visual>
+	</link>
+	<joint name="${DobotName}_elbow_joint" type="revolute">
+		<parent link="${DobotName}_shoulder_link" />
+		<child link="${DobotName}_elbow_link" />
+		<origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+		<axis xyz="0 0 1" />
+		<dynamics damping="0.5" friction="0.5"/>
+		<limit lower="${-PI}" upper="${PI}" effort="5" velocity="0.5" />
+	</joint>
+	
+	<link name="${DobotName}_hand_link">
+		<visual name="hand_vis">
+			<origin rpy="0 ${-PI_2} 0" xyz="0 0 0" />
+			<geometry>
+				<mesh filename="package://dobot_description/meshes/hand.dae" scale="1 1 1" />
+			</geometry>
+		</visual>
+		<visual name="tool_vis">
+			<origin rpy="0 ${-PI_2} 0" xyz="0 0 0" />
+			<geometry>
+				<mesh filename="package://dobot_description/meshes/suctionBase.dae" scale="1 1 1" />
+			</geometry>
+		</visual>
+	</link>
+	<joint name="${DobotName}_hand_joint" type="revolute">
+		<parent link="${DobotName}_elbow_link" />
+		<child link="${DobotName}_hand_link" />
+		<origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+		<axis xyz="0 0 1" />
+		<dynamics damping="0.5" friction="0.5"/>
+		<limit lower="${-PI}" upper="${PI}" effort="5" velocity="0.5" />
+	</joint>
+	
+	<link name="${DobotName}_tool">
+		<visual name="base_vis">
+			<origin rpy="0 -0.0 0" xyz="0 0 0" />
+			<geometry>
+				<mesh filename="package://dobot_description/meshes/suctionTool.dae" scale="1 1 1" />
+			</geometry>
+		</visual>
+	</link>
+	<joint name="${DobotName}_tool_joint" type="revolute">
+		<parent link="${DobotName}_hand_link" />
+		<child link="${DobotName}_tool" />
+		<origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+		<axis xyz="0 0 1" />
+		<dynamics damping="0.5" friction="0.5"/>
+		<limit lower="${-PI}" upper="${PI}" effort="5" velocity="0.5" />
+	</joint>
+	
+	<!-- 
+	<joint name="fixed" type="fixed">
+		<parent link="world" />
+		<child link="base_link" />
+	</joint> -->
+</robot>

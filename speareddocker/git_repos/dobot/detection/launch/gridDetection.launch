@@ -1,0 +1,14 @@
+<launch>
+    <group>
+        <node name="GridDetection" pkg="detection" type="gridDetection" args="GridDetection world" output="screen" respawn="false"/>
+        <param name="/GridDetection/startX" value="-0.05"/>
+        <param name="/GridDetection/startY" value="-1.25"/>
+        <param name="/GridDetection/startZ" value="0.02"/>
+        <param name="/GridDetection/endX" value="0.3"/>
+        <param name="/GridDetection/endY" value="-0.75"/>
+        <param name="/GridDetection/endZ" value="0.15"/>
+        <param name="/GridDetection/parentFrame" value="0.15"/>
+        <param name="/GridDetection/thresholdGreen" value="20"/>
+        <param name="/GridDetection/thresholdPink" value="20"/>
+    </group>
+</launch>

@@ -1,0 +1,6 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="dobot">
+	<xacro:include filename="$(find dobot_description)/urdf/dobot.xacro" />
+	<link name="world"/>
+	<xacro:create_dobot name="Dobot" parent="world" x="0.0" y="1.0" z="0.06" roll="0.0" pitch="0.0" yaw="0.0"/>
+
+</robot>

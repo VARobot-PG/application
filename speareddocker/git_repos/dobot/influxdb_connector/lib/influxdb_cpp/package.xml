@@ -1,0 +1,10 @@
+<package format="2">
+  <name>influxdb_cpp</name>
+  <version>0.0.1</version>
+  <description>
+  Connector to influxdb.
+  </description>
+  <maintainer email="speeters@mail.uni-paderborn.de">Sven Peeters</maintainer>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+</package>

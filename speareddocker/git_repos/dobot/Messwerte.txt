@@ -1,0 +1,12 @@
+ID, SensorName, DatenName [Datentyp]
+
+1. Lichtschranke ausgelöst[bool]
+2. Farbsensor r[bool] g[bool] b[bool]
+3. ArmStellung x[float] y[float] z[float] r[float] jointAngles[4][float]
+4. EndEffectorKinematics geschwindigkeit[float] beschleunigung[float]
+5. LinearRailPosition position[float]
+6. EndEffectorParameters xBias[float] yBias[float] zBias[float]
+
+Für jeden Input Pin kann man folgende Werte auslesen:
+7. DigitalerEingang level[bool]
+8. AnalogerEingang value[uint16]

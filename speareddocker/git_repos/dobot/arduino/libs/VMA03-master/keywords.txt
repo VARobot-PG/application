@@ -1,0 +1,31 @@
+#######################################
+# Syntax Coloring Map For vma03Stepper
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+vma03Stepper KEYWORD1	
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setSpeed	KEYWORD2
+speed	KEYWORD2
+begin	KEYWORD2
+end	KEYWORD2
+subStep	KEYWORD2
+setDegree	KEYWORD2
+degree	KEYWORD2
+currentStep	KEYWORD2
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+vma03Stepper 	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

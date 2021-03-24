@@ -1,0 +1,1 @@
+int8 velocity # velocity of the conveyorbelt in percent

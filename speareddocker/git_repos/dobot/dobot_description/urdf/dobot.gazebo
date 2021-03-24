@@ -1,0 +1,15 @@
+<?xml version='1.0'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="dobot_gazebo">
+	<!-- Created on: Mai, 2019 Author: Philip Frieling -->
+	
+	<gazebo>
+	  <plugin name="gazebo_ros_control_$(arg dobotName)" filename="libgazebo_ros_control.so">
+	    <robotNamespace>$(arg dobotName)</robotNamespace>
+	    <robotParam>$(arg robotDescription)</robotParam>
+	  </plugin>
+	  <plugin name="dobotSim_$(arg dobotName)" filename="libdobotSim.so">
+	  	<robotNamespace>$(arg dobotName)</robotNamespace>
+	  </plugin>
+	</gazebo>
+	
+</robot>

@@ -1,0 +1,3 @@
+geometry_msgs/Point basePoint
+geometry_msgs/Vector3 lineVector
+time timestamp

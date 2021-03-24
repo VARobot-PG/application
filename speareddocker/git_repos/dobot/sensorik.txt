@@ -1,0 +1,31 @@
+1. Sind Blöcke am Eingang strukturiert aufgestellt, oder durcheinander?
+-> Kamera falls blöcke nicht sortiert.
+2. Sind Blöcke am Eingang nach Farben sortiert?
+-> Farbsensor benutzen (vernünftig)
+3. Sind Blöcke auf dem Förderband verschoben? Oder immer auf der gleichen Stelle?
+-> y-Position und Rotation der Blöcke herrausfinden.
+-> Mehrere Laserscanner oder Kamera.
+4. Vielleicht statt Farbe auch Blöcke wiegen oder nach Form sortieren?
+5. Wie werden Blöcke am Ende verwendet?
+-> Blöcke nach Farben/Gewicht sortieren.
+-> 2D oder 3D Bild "malen". Was passiert wenn Blöcke verschoben sind?
+	-> Roboter kann dann Blöcke anfordern, die für die nächsten Schritte benötigt werden.
+-> Vielleicht wird Makeblock Auto/Kettenfahrzeug am Ende beladen und fährt Blöcke wieder zum Eingang.
+	-> Makeblock Roboter könnte Farblinie verfolgen/Straße.
+6. Zweiter Dobot (Malend/Sortierend) muss Position gesetzter Blöcke überprüfen können 
+   (z.b. könnte ein Turm umgefallen sein)
+-> Kamera (3D für Tiefe beim Stapeln) oder eventuell beweglicher Laserscanner (dann müsste das Gebiet vor Dobot aber als Raster betrachtet werden)
+   
+   
+Abgreifbare Daten:
+1. Strom der Motoren messen.
+2. Lichtschranke 
+3. Farbsensor (r,g,b)
+4. Position der Gelenke
+5. Position des Förderbands
+6. Position der Linear Rail
+7. 
+
+Anomaliedetektion: (neuronales Netz)
+1. Bilderkennung benötigt Kamera
+2. zusätzlich könnte man noch alle möglichen Daten (Ton, Motorstromverbrauch, Abstände/Rotationen von Körpern, usw.) auswerten, um Genauigkeit zu verbessern

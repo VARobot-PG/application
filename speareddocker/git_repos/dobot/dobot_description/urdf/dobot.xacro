@@ -1,0 +1,358 @@
+<?xml version='1.0'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="dobot">
+	<!-- Created on: Mai, 2019 Author: Philip Frieling -->
+
+	<xacro:include
+		filename="$(find dobot_description)/urdf/dobot_parameters.xacro" />
+	<xacro:include
+		filename="$(find dobot_description)/urdf/dobot_functions.xacro" />
+
+	<xacro:macro name="create_dobot" params="name parent x y z roll pitch yaw hasRail">
+	
+		<xacro:if value="${hasRail == 1}">
+			
+			<joint name="${name}_fixed" type="fixed"> 
+				<parent link="${parent}" /> 
+				<child link="${name}_Rail" /> 
+				<origin rpy="${roll} ${pitch} ${yaw}" xyz="${x} ${y} ${z}" />
+			</joint>
+			
+			<link name="${name}_Rail">
+				<inertial>
+					<origin rpy="0 0 0" xyz="0 -0.5 -0.02" />
+					<mass value="4.7" />
+					<xacro:box_inertia m="4.7" x="0.04" y="1.0" z="0.04"/>
+				</inertial>
+				<visual name="base_vis">
+					<origin rpy="0 0 0" xyz="0 0 0" />
+					<geometry>
+						<mesh
+							filename="package://dobot_description/meshes/rail.dae" scale="1 1 1" />
+					</geometry>
+				</visual>
+	
+				<collision name="tool_col">
+					<origin rpy="0 0 0" xyz="0 -0.5 -0.02"/>
+					<geometry>
+						<box size="0.04 1.0 0.04" />
+					</geometry>
+				</collision>
+			</link>
+			<joint name="${name}_rail_joint" type="prismatic">
+				<parent link="${name}_Rail" />
+				<child link="${name}" />
+				<origin rpy="0 0 0" xyz="0.0 0.0 0.05" />
+				<axis xyz="0 1 0" />
+				<dynamics damping="1.0" friction="10.0" />
+				<limit lower="-1.0" upper="0.001" effort="5000.0" velocity="1.0" />
+			</joint>
+			<gazebo reference="${name}_rail_joint">
+				<implicitSpringDamper>True</implicitSpringDamper>
+			</gazebo>
+			<transmission name="${name}_rail_transmission">
+				<type>transmission_interface/SimpleTransmission</type>
+				<joint name="${name}_rail_joint">
+					<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+				</joint>
+				<actuator name="${name}_rail_motor">
+					<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+					<mechanicalReduction>1</mechanicalReduction>
+				</actuator>
+			</transmission>
+			
+		</xacro:if>
+		<xacro:unless value="${hasRail == 1}">
+		
+			<joint name="${name}_fixed" type="fixed"> 
+				<parent link="${parent}" /> 
+				<child link="${name}" /> 
+				<origin rpy="${roll} ${pitch} ${yaw}" xyz="${x} ${y} ${z}" />
+			</joint>
+			
+		</xacro:unless>
+
+
+		<link name="${name}">
+			<inertial>
+				<origin rpy="0 0 0" xyz="0 0 0.0" />
+				<mass value="1.0" />
+				<xacro:box_inertia m="1.0" x="0.2" y="0.2" z="0.04"/>
+			</inertial>
+			<visual name="stand_vis">
+				<origin rpy="0 -0.0 0" xyz="0 0 0" />
+				<geometry>
+					<mesh filename="package://dobot_description/meshes/stand.dae"
+						scale="1 1 1" />
+				</geometry>
+			</visual>
+
+			<collision name="stand_col">
+				<origin rpy="0 0 0" xyz="0 0 -0.02"/>
+				<geometry>
+					<box size="0.16 0.16 0.04" />
+				</geometry>
+			</collision> 
+		</link>
+
+		<link name="${name}_base_link">
+			<inertial>
+				<origin rpy="0 0 0" xyz="0 0 0.055" />
+				<mass value="0.75" />
+				<xacro:box_inertia m="0.75" x="0.075" y="0.075" z="0.075"/>
+			</inertial>
+			<visual name="base_vis">
+				<origin rpy="0 -0.0 0" xyz="0 0 0" />
+				<geometry>
+					<mesh filename="package://dobot_description/meshes/base.dae"
+						scale="1 1 1" />
+				</geometry>
+			</visual>
+
+			<collision name="base_vis">
+				<origin rpy="0 0 0" xyz="0 0 0.055"/>
+				<geometry>
+					<cylinder radius="0.045" length="0.11"/>
+				</geometry>
+			</collision> 
+		</link>
+		<joint name="${name}_base_joint" type="revolute">
+			<parent link="${name}" />
+			<child link="${name}_base_link" />
+			<origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+			<axis xyz="0 0 1" />
+			<dynamics damping="1.0" friction="1.0" />
+			<limit lower="-3.0" upper="3.0" effort="50.0" velocity="3.1415" />
+		</joint>
+		
+		<gazebo reference="${name}_base_joint">
+			<implicitSpringDamper>True</implicitSpringDamper>
+		</gazebo>
+		
+		<transmission name="${name}_base_transmission">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${name}_base_joint">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="${name}_base_motor">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		</transmission>
+
+		<link name="${name}_shoulder_link">
+			<inertial>
+				<origin rpy="0 0 0" xyz="-0.03 0 0.08" />
+				<mass value="0.3" />
+				<xacro:box_inertia m="0.3" x="0.08" y="0.04" z="0.15"/>
+			</inertial>
+			<visual name="shoulder_vis">
+				<origin rpy="0 -0.0 0" xyz="0 0 0" />
+				<geometry>
+					<mesh
+						filename="package://dobot_description/meshes/shoulder.dae"
+						scale="1 1 1" />
+				</geometry>
+			</visual>
+
+			<collision name="shoulder_col">
+				<origin rpy="0 0 0" xyz="-0.03 0 0.08"/>
+				<geometry>
+					<box size="0.08 0.04 0.15" />
+				</geometry>
+			</collision> 
+		</link>
+		<joint name="${name}_shoulder_joint" type="revolute">
+			<parent link="${name}_base_link" />
+			<child link="${name}_shoulder_link" />
+			<origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.082" />
+			<axis xyz="0 1 0" />
+			<dynamics damping="1.0" friction="1.0" />
+			<limit lower="-3.0" upper="3.0" effort="5.0" velocity="3.1415" />
+		</joint>
+		<gazebo reference="${name}_shoulder_joint">
+			<implicitSpringDamper>True</implicitSpringDamper>
+		</gazebo>
+		<transmission name="${name}_shoulder_transmission">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${name}_shoulder_joint">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="${name}_shoulder_motor">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		</transmission>
+
+
+		<link name="${name}_elbow_link">
+			<inertial>
+				<origin rpy="0 0 0" xyz="0.07 0 0.02" />
+				<mass value="0.3" />
+				<xacro:box_inertia m="0.3" x="0.19" y="0.04" z="0.06"/>
+			</inertial>
+			<visual name="elbow_vis">
+				<origin rpy="0 -0.0 0" xyz="0 0 0" />
+				<geometry>
+					<mesh filename="package://dobot_description/meshes/elbow.dae"
+						scale="1 1 1" />
+				</geometry>
+			</visual>
+
+			<collision name="elbow_col">
+				<origin rpy="0 0 0" xyz="0.07 0 0.02"/>
+				<geometry>
+					<box size="0.19 0.04 0.06" />
+				</geometry>
+			</collision> 
+		</link>
+		<joint name="${name}_elbow_joint" type="revolute">
+			<parent link="${name}_shoulder_link" />
+			<child link="${name}_elbow_link" />
+			<origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.135" />
+			<axis xyz="0 1 0" />
+			<dynamics damping="1.0" friction="1.0" />
+			<limit lower="-3.0" upper="3.0" effort="50.0" velocity="3.1415" />
+		</joint>
+		<gazebo reference="${name}_elbow_joint">
+			<implicitSpringDamper>True</implicitSpringDamper>
+		</gazebo>
+		<transmission name="${name}_elbow_transmission">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${name}_elbow_joint">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="${name}_elbow_motor">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		</transmission>
+
+		<link name="${name}_hand_link">
+			<inertial>
+				<origin rpy="0 0 0" xyz="0.05 0 0.005" />
+				<mass value="0.2" />
+				<xacro:box_inertia m="0.2" x="0.1" y="0.02" z="0.05"/>
+			</inertial>
+			<visual name="hand_vis">
+				<origin rpy="0 0 0" xyz="0 0 0" /> <!-- ${-PI_2} -->
+				<geometry>
+					<mesh filename="package://dobot_description/meshes/hand.dae"
+						scale="1 1 1" />
+				</geometry>
+			</visual>
+
+			<collision name="hand_col">
+				<origin rpy="0 0 0" xyz="0.05 0 0.005"/>
+				<geometry>
+					<box size="0.1 0.02 0.05" />
+				</geometry>
+			</collision> 
+		</link>
+		<joint name="${name}_hand_joint" type="revolute">
+			<parent link="${name}_elbow_link" />
+			<child link="${name}_hand_link" />
+			<origin rpy="0.0 0 0.0" xyz="0.147 0.0 0.0" /> <!-- 0 ${PI_2} 0 -->
+			<axis xyz="0 1 0" />
+			<dynamics damping="1.0" friction="1.0" />
+			<limit lower="-3.0" upper="3.0" effort="50.0" velocity="3.1415" />
+		</joint>
+		<gazebo reference="${name}_hand_joint">
+			<implicitSpringDamper>True</implicitSpringDamper>
+		</gazebo>
+		<!-- 
+		<transmission name="${name}_hand_transmission">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${name}_hand_joint">
+				<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="${name}_hand_motor">
+				<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		</transmission> -->
+
+		<link name="${name}_tool_link">
+			<inertial>
+				<origin rpy="0 0 0" xyz="0 0 0.0" />
+				<mass value="0.1" />
+				<xacro:box_inertia m="0.1" x="0.0075" y="0.0075" z="0.05"/>
+			</inertial>
+			<visual name="base_vis">
+				<origin rpy="0 -0.0 0" xyz="0 0 0" />
+				<geometry>
+					<mesh
+						filename="package://dobot_description/meshes/suctionTool.dae"
+						scale="1 1 1" />
+				</geometry>
+			</visual>
+			<collision name="tool_col">
+				<origin rpy="0 0 0" xyz="0 0 -0.01"/>
+				<geometry>
+					<cylinder radius="0.0075" length="0.04"/>
+				</geometry>
+			</collision>
+		</link>
+		<joint name="${name}_tool_joint" type="revolute">
+			<parent link="${name}_hand_link" />
+			<child link="${name}_tool_link" />
+			<origin rpy="0 0 0" xyz="0.069 0.0 0.0" />
+			<axis xyz="0 0 1" />
+			<dynamics damping="1.0" friction="1.0" />
+			<limit lower="-3.0" upper="3.0" effort="5.0" velocity="3.1415" />
+		</joint>
+		<gazebo reference="${name}_tool_joint">
+			<implicitSpringDamper>True</implicitSpringDamper>
+		</gazebo>
+		<transmission name="${name}_tool_transmission">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${name}_tool_joint">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="${name}_tool_motor">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		</transmission>
+		
+		<link name="${name}_gripper_link">
+			<inertial>
+				<origin rpy="0 0 0" xyz="0 0 -0.035" />
+				<mass value="0.1" />
+				<xacro:box_inertia m="0.1" x="0.02" y="0.02" z="0.07"/>
+			</inertial>
+			<visual name="base_vis">
+				<origin rpy="0 -0.0 0" xyz="0 0 -0.00125" />
+				<geometry>
+					<mesh
+						filename="package://dobot_description/meshes/suction.dae"
+						scale="1 1 1" />
+				</geometry>
+			</visual>
+
+			<collision name="tool_col">
+				<origin rpy="0 0 0" xyz="0 0 -0.045"/>
+				<geometry>
+					<cylinder radius="0.01" length="0.03"/>
+				</geometry>
+			</collision>
+			<collision name="suction_col">
+				<origin rpy="0 0 0" xyz="0 0 -0.061"/>
+				<geometry>
+					<cylinder radius="0.0125" length="0.001"/>
+				</geometry>
+			</collision> 
+		</link>
+		<joint name="${name}_gripper_joint" type="prismatic">
+			<parent link="${name}_tool_link" />
+			<child link="${name}_gripper_link" />
+			<origin rpy="0 0 0" xyz="0.0 0.0 0.0" />
+			<axis xyz="0 0 1" />
+			<dynamics damping="1.0" friction="1.0" />
+			<limit lower="-0.001" upper="0.01" effort="10.0" velocity="0.5" />
+		</joint>
+		<gazebo reference="${name}_gripper_joint">
+			<implicitSpringDamper>True</implicitSpringDamper>
+		</gazebo>
+		
+	</xacro:macro>
+</robot>

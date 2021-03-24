@@ -1,0 +1,12 @@
+#goal
+uint8 b0
+uint8 b1
+uint8 b2
+uint8 b3
+---
+#result definition
+bool success
+---
+#feedback 
+std_msgs/String comment
+float32 progress

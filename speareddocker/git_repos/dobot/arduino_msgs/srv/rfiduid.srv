@@ -1,0 +1,5 @@
+---
+uint8 b0 # 1st byte of UID
+uint8 b1 # 2nd byte of UID
+uint8 b2 # 3rd byte of UID
+uint8 b3 # 4th byte of UID

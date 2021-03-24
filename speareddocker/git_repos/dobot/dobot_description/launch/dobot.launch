@@ -1,0 +1,47 @@
+<launch>
+<!-- Use this file to start the dobot simulation. Afterwards, start dobot_control.launch to enable the motors. -->
+	<arg name="paused" default="true" />
+	<arg name="use_sim_time" default="true" />
+	<arg name="gui" default="true" />
+	<arg name="headless" default="false" />
+	<arg name="debug" default="false" />
+	
+	<!-- Start GAZEBo -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+		<arg name="debug" value="$(arg debug)" />
+		<arg name="gui" value="$(arg gui)" />
+		<arg name="paused" value="$(arg paused)" />
+		<arg name="use_sim_time" value="$(arg use_sim_time)" />
+		<arg name="headless" value="$(arg headless)" />
+		<arg name="physics" value="ode" />
+		<arg name="verbose" value="true" />
+	</include>
+	
+	<!-- Spawn the first robot -->
+	<group ns="Dobot_Loader">
+		<param name="robot_description" command="rosrun xacro xacro '$(find dobot_description)/urdf/scenario.xacro' 
+			dobotName:=Dobot_Loader xPos:=0.0 yPos:=0.56 zPos:=0.05 roll:=0.0 pitch:=0.0 yaw:=0.0 hasRail:=0 robotDescription:=robot_description"/>
+		<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+			args="-param robot_description -urdf -model Dobot_Loader"/>
+			
+		<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+    		<remap from="/joint_states" to="/Dobot_Loader/joint_states" />
+    		<param name="tf_prefix" value="Dobot_Loader" />
+  		</node>
+	</group>
+	
+	<!-- Spawn the second robot -->
+	<group ns="Dobot_Rail">
+		<param name="robot_description" command="rosrun xacro xacro '$(find dobot_description)/urdf/scenario.xacro' 
+			dobotName:=Dobot_Rail xPos:=0.0 yPos:=0.0 zPos:=0.05 roll:=0.0 pitch:=0.0 yaw:=0.0 hasRail:=1 robotDescription:=robot_description"/>
+		
+		<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+			args="-param robot_description -urdf -model Dobot_Rail"/>
+		
+		<node name="robot_state_publisher2" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+    		<remap from="/joint_states" to="/Dobot_Rail/joint_states" />
+    		<param name="tf_prefix" value="Dobot_Rail" />
+  		</node>
+	</group>
+
+</launch>

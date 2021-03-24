@@ -1,0 +1,4 @@
+bool enable
+uint8 infraredPort
+---
+int32 result

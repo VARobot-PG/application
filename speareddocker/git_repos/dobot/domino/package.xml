@@ -1,0 +1,23 @@
+<package format="2">
+  <name>domino</name>
+  <version>1.0.0</version>
+  <description>
+  Package for playing a game of domino with the dobots.
+  </description>
+  <maintainer email="lwerneke@mail.upb.de">Lars Werneke</maintainer>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <depend>dobot_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>sensor_msgs</depend>
+  <depend>dobot</depend>
+  <depend>arduino</depend>
+  <depend>detection</depend>
+</package>

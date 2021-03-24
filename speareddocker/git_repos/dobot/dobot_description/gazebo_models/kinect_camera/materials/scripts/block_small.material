@@ -1,0 +1,13 @@
+material M_block_small
+{
+  technique
+  {
+    pass
+    {      
+      texture_unit
+      {
+        texture FoamBlock.png
+      }            
+    }
+  }
+}

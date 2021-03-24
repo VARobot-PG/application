@@ -1,0 +1,123 @@
+<xml xmlns="https://developers.google.com/blockly/xml"><block type="factory_base" id="caF,]6,7xdM%dD7.{wpI" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="BOTH"/>
+    <field name="NAME">setptpcommand</field>
+    <field name="INLINE">INT</field>
+    <field name="CONNECTIONS">BOTH</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="1;N`wDr}W+U[]Pv92O3U">
+        <field name="ALIGN">CENTRE</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="#{VNR]@$(;07Admdzn8k">
+            <field name="TEXT">MoveTo</field>
+            <next>
+              <block type="field_static" id="4SA(vWBtz^!Q9]rxhW1~">
+                <field name="TEXT">X</field>
+                <next>
+                  <block type="field_number" id="tnRum-IlvmCqE0O`tCM#">
+                    <field name="VALUE">0</field>
+                    <field name="FIELDNAME">x</field>
+                    <field name="MIN">-20</field>
+                    <field name="MAX">400</field>
+                    <field name="PRECISION">0</field>
+                    <next>
+                      <block type="field_static" id="Ev~.r(tcWC%xVe|NVQCd">
+                        <field name="TEXT">Y</field>
+                        <next>
+                          <block type="field_number" id="jeMu*Rl.O]V@T[:^IkQk">
+                            <field name="VALUE">0</field>
+                            <field name="FIELDNAME">y</field>
+                            <field name="MIN">-20</field>
+                            <field name="MAX">400</field>
+                            <field name="PRECISION">0</field>
+                            <next>
+                              <block type="field_static" id="IQ0lg2tda^n0JT@(HQjF">
+                                <field name="TEXT">Z</field>
+                                <next>
+                                  <block type="field_number" id="~NE=ONunW$-ckblz^H3}">
+                                    <field name="VALUE">0</field>
+                                    <field name="FIELDNAME">z</field>
+                                    <field name="MIN">-20</field>
+                                    <field name="MAX">400</field>
+                                    <field name="PRECISION">0</field>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="iH}.?ZzDC8!kK(qwdnB," deletable="false" movable="false">
+        <field name="TEXT">Move Robot to Coordinate (in millimeters)</field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="p?U%+8n)!{fw.u1`Hy08" deletable="false" movable="false">
+        <field name="TEXT"/>
+      </block>
+    </value>
+    <value name="TOPTYPE">
+      <shadow type="type_null" id="64DjeRJlYv4#i}i3@p3e"/>
+    </value>
+    <value name="BOTTOMTYPE">
+      <shadow type="type_null" id="}I`u5~49cdc9l|I@(/y;"/>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="=wbIKfGJg^f}n~~O08ub">
+        <mutation colour="#5b67a5"/>
+        <field name="HUE">230</field>
+      </block>
+    </value>
+  </block><block type="factory_base" id="eqrK*$ZEZtOFaUe!V=e~" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="BOTH"/>
+    <field name="NAME">toggleSuctionCommand</field>
+    <field name="INLINE">INT</field>
+    <field name="CONNECTIONS">BOTH</field>
+    <statement name="INPUTS">
+      <block type="input_dummy" id="K@2KdO_mDvEl+RJ32XFB">
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="CHD@w;;{Q5J4cckBYqUz">
+            <field name="TEXT">SuctionEnabled</field>
+            <next>
+              <block type="field_checkbox" id="S;}I:Kb@Uu##F4Ugn0]!">
+                <field name="CHECKED">TRUE</field>
+                <field name="FIELDNAME">suctionEnabled</field>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="4?9`xJ6/V[pdoUOVPHh!" deletable="false" movable="false">
+        <field name="TEXT">En-/Disable Suction Cup</field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="c,pxw,NzfBiUxg=K2AuG" deletable="false" movable="false">
+        <field name="TEXT"/>
+      </block>
+    </value>
+    <value name="TOPTYPE">
+      <shadow type="type_null" id="SpPwU*ZFmPr1UIq)-x5?"/>
+    </value>
+    <value name="BOTTOMTYPE">
+      <shadow type="type_null" id="Uc6$:/!{St3C%mQ3O+!|"/>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="OP$h/#;(N%Ge5-%F3H^p">
+        <mutation colour="#5b67a5"/>
+        <field name="HUE">230</field>
+      </block>
+    </value>
+  </block></xml>

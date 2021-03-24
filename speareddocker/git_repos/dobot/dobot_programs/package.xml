@@ -1,0 +1,27 @@
+<package format="2">
+  <name>dobot_programs</name>
+  <version>1.0.0</version>
+  <description>
+  Ros nodes for the first test scenario.
+  </description>
+  <maintainer email="frielingphilip@yahoo.de">Philip Frieling</maintainer>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <depend>dobot_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>sensor_msgs</depend>
+  <depend>arduino_msgs</depend>
+  <depend>detection_msgs</depend>
+  <depend>dobot</depend>
+  <depend>arduino</depend>
+  <depend>detection</depend>
+  <depend>marker_helper</depend>
+  <depend>tf_helper</depend>
+</package>

@@ -1,0 +1,8 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="scenario">
+	<xacro:include filename="$(find dobot_description)/urdf/dobot.xacro" />
+	<xacro:include filename="$(find dobot_description)/urdf/dobot.gazebo" />
+		
+	<link name="world"/>
+	<xacro:create_dobot name="$(arg dobotName)" parent="world" x="$(arg xPos)" y="$(arg yPos)" z="$(arg zPos)" roll="$(arg roll)" pitch="$(arg pitch)" yaw="$(arg yaw)" hasRail="$(arg hasRail)"/>
+	
+</robot>

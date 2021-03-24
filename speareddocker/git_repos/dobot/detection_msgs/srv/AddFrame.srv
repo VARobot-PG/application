@@ -1,0 +1,11 @@
+string name
+float64 x
+float64 y
+float64 z
+bool useXYZ
+float64 roll
+float64 pitch
+float64 yaw
+bool useRotation
+---
+bool success

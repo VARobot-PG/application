@@ -1,0 +1,9 @@
+Left_dobot:
+- x axis values are larger than y axis values (1 unit in x > 1 unit in y, estimated about 20% larger)
+- x and y axis are not in a 90 degree angle at all times (but at sometimes somehow)
+- 
+
+test area:  x  y   z
+	    20 203 -45
+
+result: when starting at test areas first field and adjusting the block size to 19|26 (non quadratic for the dobot) we achieve the desired effect: all blocks are picked up! However the internal computations of the dobot seem to be dysfunctional.

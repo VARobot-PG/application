@@ -1,0 +1,11 @@
+<launch>
+	<!-- Arduino sensor/motor stuff -->
+    <include file="$(find arduino)/launch/arduino.launch"></include>
+    
+    <group>
+    	<!--When setting up the environment via the env-loader, make sure that ROS_IP is exported on the target machine in env.sh since its .bashrc is not loaded-->
+   		<machine name="jetson" user="nvidia" address="131.234.120.91" default="true" env-loader="/home/nvidia/env.sh"/>
+    	<include file="$(find dobot)/launch/dobot.launch"/>
+    </group>
+
+</launch>

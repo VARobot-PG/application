@@ -1,0 +1,17 @@
+<launch>
+<!-- Use this file after dobot.launch has been executed to start the motors. -->
+	<rosparam file="$(find dobot_description)/config/dobot_control_loader.yaml" command="load"/>
+	<group ns="Dobot_Loader">
+		 <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+		   output="screen" args="joint_state_controller joint_trajectory_controller">
+		 </node>
+	</group>
+  
+  <rosparam file="$(find dobot_description)/config/dobot_control_rail.yaml" command="load"/>
+  <group ns="Dobot_Rail">
+	 <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	   output="screen" args="joint_state_controller joint_trajectory_controller">
+	 </node>
+  </group>
+
+</launch>

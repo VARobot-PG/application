@@ -1,0 +1,11 @@
+<launch>
+    <arg name="picture"/>
+
+    <!-- add blockloader nodes -->
+
+    <node name="DobotRailActionServer" pkg="dobot_programs" type="DobotRailActionServer" respawn="false">
+    </node>
+
+    <node name="PictureDrawer" pkg="dobot_programs" type="pictureDrawer" args="$(arg picture)" respawn="false" output="screen">
+    </node>
+</launch>

@@ -1,0 +1,45 @@
+1. Position:
+
+position: 
+  x: 49.7541809082
+  y: 141.470046997
+  z: -17.5717849731
+orientation: 
+  x: 0.0
+  y: 0.0
+  z: -0.684738317871
+  w: -0.728789020252
+
+=> Unschärfe durch Bewegen von Hand, ansonsten (ziemlich) genau
+
+
+erster klotz level 0 position anfahren:
+LOAD_POSITION(154.0,174.0,-51.0);
+
+152+(-2*1), 174+(-21.5*1), -51 für rechteren
+
+152+(-21*1),174+(-3*1),-51
+
+
++27.5 für nächst höheren block (höhe breite länge)
+klotz auf förderband abgeben position:
+DROP_POSITION(213.0,58.0,17.0);
+
+
+blockload position:
+position: 
+  x: 105.000007629
+  y: 126.0
+  z: -51.0
+orientation: 
+  x: 0.0
+  y: 0.0
+  z: 0.0
+  w: 1.0
+
+
+rail multiplex kontakte communication interface:
+address 18: schwarzes kabel beim communication interface
+werte:	1 - high/an
+	0,2 - nichts
+	3 - low/aus

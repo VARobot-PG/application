@@ -1,0 +1,14 @@
+<launch>
+  <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
+  	<arg name="base_name" default="kinect2_xavier"/>
+	<arg name="reg_method" default="cpu"/>
+  	<arg name="fps_limit" default="3.0"/>
+  	<arg name="calib_path" default="$(find detection)/calibration/"/>
+  	<arg name="max_depth" default="3.0"/>
+  	<arg name="publish_tf" default="false"/>
+  	<arg name="base_name_tf" default="kinect2_xavier"/>
+  </include>
+  
+  <node name="medianFilterServer_xavier" pkg="detection" type="medianFilterServer" args="kinect2_xavier" respawn="false" output="screen">
+  </node>
+</launch>

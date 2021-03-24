@@ -1,0 +1,7 @@
+In order to have our latest arduino libs, keep the libraries here and create
+symlink in ~/Arduino/libraries to the library folders as stated below.
+
+ln -s "path to dobot repo on your pc"/dobot/arduino/libs/"library to create symlink for" ~/Arduino/libraries/"library to reate symlink for"
+
+
+You also need rosserial version 0.7.7 since 0.8 has a bug that prevents receiving answers from services.

@@ -1,0 +1,2 @@
+In order to be able to compile the influxdb_connector and its sublibrary the package libwebsocketpp-dev is needed.
+Install it via sudo apt install libwebsocketpp-dev.

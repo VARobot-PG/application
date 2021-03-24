@@ -1,0 +1,4 @@
+<launch>
+  <node name="tfPublisher" pkg="detection" type="tfPublisher" args="" respawn="false" output="screen">
+  </node>
+</launch>

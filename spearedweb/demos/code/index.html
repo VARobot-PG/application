@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google" value="notranslate">
+  <title>Blockly Demo:</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="/storage.js"></script>
+  <script src="../../blockly_compressed.js"></script>
+  <script src="../../blocks_compressed.js"></script>
+  <script src="../../javascript_compressed.js"></script>
+ <!-- <script src="../../python_compressed.js"></script>
+  <script src="../../php_compressed.js"></script>
+  <script src="../../lua_compressed.js"></script>
+  <script src="../../dart_compressed.js"></script> -->
+  <script src="code.js"></script>
+  <script src="../../roslib.js"></script>
+  <script>
+var ros = new ROSLIB.Ros();
+
+// If there is an error on the backend, an 'error' emit will be emitted.
+ros.on('error', function(error) {
+  document.getElementById('connecting').style.display = 'none';
+  document.getElementById('connected').style.display = 'none';
+  document.getElementById('closed').style.display = 'none';
+  document.getElementById('error').style.display = 'inline';
+  console.log(error);
+});
+
+// Find out exactly when we made a connection.
+ros.on('connection', function() {
+  console.log('Connection made!');
+  document.getElementById('connecting').style.display = 'none';
+  document.getElementById('error').style.display = 'none';
+  document.getElementById('closed').style.display = 'none';
+  document.getElementById('connected').style.display = 'inline';
+});
+
+ros.on('close', function() {
+  console.log('Connection closed.');
+  document.getElementById('connecting').style.display = 'none';
+  document.getElementById('connected').style.display = 'none';
+  document.getElementById('closed').style.display = 'inline';
+});
+
+// Create a connection to the rosbridge WebSocket server.
+ros.connect('ws://vm-eng-gazebo-ar-masters.cs.upb.de:9090');
+var codeParamROS = new ROSLIB.Param({
+    ros : ros,
+    name : '/my_own/variable'
+  });
+  codeParamROS.get(function(value) {
+    console.log('current codeVal: ' + value);
+  });
+function uploadToROS(){
+  var elements = document.getElementById('content_javascript').getElementsByClassName('str');
+  var string_result = "";
+  Array.prototype.forEach.call(elements, element => {
+    if(string_result == ""){
+        string_result =  string_result +  element.innerHTML.replace(/"/g,"").replace(/\./g,",");
+    }
+        else{
+        string_result =  string_result + "\n" + element.innerHTML.replace(/"/g,"").replace(/\./g,",");
+  }
+  });
+  console.log("Setting param to value:");
+  console.log(string_result);
+  codeParamROS.set(string_result);
+}
+function addOpeningBlock(typename){
+  return '<block type="'+typename+'">';
+}
+function addClosingBlock(){
+  return '</block>';
+}
+function addField(fieldname,value){
+  return '<field name="'+fieldname+'">'+value+'</field>';
+}
+function downloadFromROS(){
+  codeParamROS.get(function(value) {
+    console.log('current codeVal: ' + value);
+    var lines = value.split("\n");
+    var str_result;
+     str_result = "<xml>";
+      var str_end = "";
+      var isFirst = true;
+    Array.prototype.forEach.call(lines, line => {
+      if(line.includes("Move")){
+        var movecommand = line.replace("Move(", "").replace(/,/g,".");
+        movecommand = movecommand.replace(");", "");
+        var variables = movecommand.split(" ");
+        var valx = 0;
+          var valy = 0;
+          var valz = 0;
+        if(variables.length == 3){
+           valx = variables[0];
+           valy = variables[1];
+           valz = variables[2];
+        }
+        if(!isFirst){
+          str_result = str_result + "<next>";
+            str_end = "</next>" + str_end;
+        }
+        str_result = str_result + addOpeningBlock("setptpcommand") + addField("x",valx) + addField("y",valy) + addField("z",valz);
+        str_end = addClosingBlock() + str_end;
+      }else{
+        if(line.includes("ToggleSuction")){
+          var toggleCommand = line.replace("ToggleSuction(", "");
+          toggleCommand = toggleCommand.replace(");", "");
+          toggleCommand = toggleCommand.toUpperCase();
+          if(!isFirst){
+           str_result = str_result + "<next>";
+            str_end = "</next>" + str_end;
+         }
+          str_result = str_result + addOpeningBlock("togglesuctioncommand") + addField("suctionEnabled",toggleCommand);
+          str_end = addClosingBlock() + str_end;
+        }
+      }
+      /*
+      <xml>
+      <block type="togglesuctioncommand" id="1a*?[?d%}$]/cA+Ye{1^" x="162" y="38">
+        <field name="suctionEnabled">TRUE</field>
+          <next>
+            <block type="setptpcommand" id="{k,L51,qrPmb_wgWc9#*">
+              <field name="x">134</field>
+              <field name="y">174</field>
+              <field name="z">0</field>
+              <next>
+                <block type="setptpcommand" id="x74@L,(D`|qG:1P(hX9j">
+                  <field name="x">132</field>
+                  <field name="y">172</field>
+                  <field name="z">86</field>
+                  <next>
+                    <block type="togglesuctioncommand" id="m#Nl]8Kq*32xN8xwd[gH">
+                      <field name="suctionEnabled">FALSE</field>
+                    </block>
+                  </next>
+                </block>
+              </next>
+            </block>
+          </next>
+        </block>
+        </xml>
+        */
+        isFirst = false;
+        
+    }
+    )
+    str_result = str_result + str_end+ "</xml>";
+    console.log("evaluated downloaded Code to:");
+  console.log(str_result);
+    var dom = Blockly.Xml.textToDom(str_result);
+    if (dom){
+      Code.workspace.clear();
+    }
+    Blockly.Xml.domToWorkspace(dom,Code.workspace);
+  });
+  
+
+  }
+  </script>
+</head>
+<body>
+  <div id="statusIndicator">
+    <p id="connecting">
+      Connecting to rosbridge...
+    </p>
+    <p id="connected" style="color:#00D600; display:none">
+      Connected
+    </p>
+    <p id="error" style="color:#FF0000; display:none">
+      Error in the backend!
+    </p>
+    <p id="closed" style="display:none">
+      Connection closed.
+    </p>
+  </div>
+  <table width="100%" height="100%">
+    <tr>
+      <td>
+        <h1><a href="https://developers.google.com/blockly/">Blockly</a>&rlm; &gt;
+          <a href="../index.html">Demos</a>&rlm; &gt;
+          <span id="title">...</span>
+        </h1>
+      </td>
+      <td class="farSide">
+        <select id="languageMenu"></select>
+      </td>
+    </tr>
+    <tr>
+      <td colspan=2>
+        <table width="100%">
+          <tr id="tabRow" height="1em">
+            <td id="tab_blocks" class="tabon">...</td>
+            <td class="tabmin tab_collapse">&nbsp;</td>
+            <td id="tab_javascript" class="taboff tab_collapse">Robot DSL</td>
+            <td class="tabmin tab_collapse">&nbsp;</td>
+            <!--<td id="tab_python" class="taboff tab_collapse">Python</td>
+            <td class="tabmin tab_collapse">&nbsp;</td>
+            <td id="tab_php" class="taboff tab_collapse">PHP</td>
+            <td class="tabmin tab_collapse">&nbsp;</td>
+            <td id="tab_lua" class="taboff tab_collapse">Lua</td>
+            <td class="tabmin tab_collapse">&nbsp;</td>
+            <td id="tab_dart" class="taboff tab_collapse">Dart</td>
+            <td class="tabmin tab_collapse">&nbsp;</td>-->
+            <td id="tab_xml" class="taboff tab_collapse">XML</td>
+            <td class="tabmin">&nbsp;</td> 
+            <td id="tab_code" class="taboff">
+              <select id="code_menu"></select>
+            </td>
+            <td class="tabmax">
+              <button onclick="uploadToROS()" id="uploadROSButton" title="Upload to ROS">Upload To ROS</button>
+              <button onclick="downloadFromROS()" id="downloadROSButton" title="Download from ROS">Download From ROS</button>
+              <button id="trashButton" class="notext" title="...">
+                <img src='../../media/1x1.gif' class="trash icon21">
+              </button>
+              <button id="linkButton" class="notext" title="...">
+                <img src='../../media/1x1.gif' class="link icon21">
+              </button>
+              <button id="runButton" class="notext primary" title="...">
+                <img src='../../media/1x1.gif' class="run icon21">
+              </button>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td height="99%" colspan=2 id="content_area">
+      </td>
+    </tr>
+  </table>
+  <div id="content_blocks" class="content"></div>
+  <pre id="content_javascript" class="content prettyprint lang-js"></pre>
+  <!--<pre id="content_python" class="content prettyprint lang-py"></pre>
+  <pre id="content_php" class="content prettyprint lang-php"></pre>
+  <pre id="content_lua" class="content prettyprint lang-lua"></pre>
+  <pre id="content_dart" class="content prettyprint lang-dart"></pre>-->
+  <textarea id="content_xml" class="content" wrap="off"></textarea>
+
+  <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+<!--    <category name="%{BKY_CATLOGIC}" colour="%{BKY_LOGIC_HUE}">
+      <block type="controls_if"></block>
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_boolean"></block>
+      <block type="logic_null"></block>
+      <block type="logic_ternary"></block>
+    </category>
+    <category name="%{BKY_CATLOOPS}" colour="%{BKY_LOOPS_HUE}">
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="controls_whileUntil"></block>
+      <block type="controls_for">
+        <value name="FROM">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="TO">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+        <value name="BY">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="controls_forEach"></block>
+      <block type="controls_flow_statements"></block>
+    </category>
+    <category name="%{BKY_CATMATH}" colour="%{BKY_MATH_HUE}">
+      <block type="math_number">
+        <field name="NUM">123</field>
+      </block>
+      <block type="math_arithmetic">
+        <value name="A">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="B">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_single">
+        <value name="NUM">
+          <shadow type="math_number">
+            <field name="NUM">9</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_trig">
+        <value name="NUM">
+          <shadow type="math_number">
+            <field name="NUM">45</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_constant"></block>
+      <block type="math_number_property">
+        <value name="NUMBER_TO_CHECK">
+          <shadow type="math_number">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_round">
+        <value name="NUM">
+          <shadow type="math_number">
+            <field name="NUM">3.1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_on_list"></block>
+      <block type="math_modulo">
+        <value name="DIVIDEND">
+          <shadow type="math_number">
+            <field name="NUM">64</field>
+          </shadow>
+        </value>
+        <value name="DIVISOR">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_constrain">
+        <value name="VALUE">
+          <shadow type="math_number">
+            <field name="NUM">50</field>
+          </shadow>
+        </value>
+        <value name="LOW">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="HIGH">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_random_int">
+        <value name="FROM">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="TO">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_random_float"></block>
+      <block type="math_atan2">
+        <value name="X">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="Y">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+    </category>
+    <category name="%{BKY_CATTEXT}" colour="%{BKY_TEXTS_HUE}">
+      <block type="text"></block>
+      <block type="text_join"></block>
+      <block type="text_append">
+        <value name="TEXT">
+          <shadow type="text"></shadow>
+        </value>
+      </block>
+      <block type="text_length">
+        <value name="VALUE">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_isEmpty">
+        <value name="VALUE">
+          <shadow type="text">
+            <field name="TEXT"></field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_indexOf">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">{textVariable}</field>
+          </block>
+        </value>
+        <value name="FIND">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_charAt">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">{textVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="text_getSubstring">
+        <value name="STRING">
+          <block type="variables_get">
+            <field name="VAR">{textVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="text_changeCase">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_trim">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_print">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_prompt_ext">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+    </category>
+    <category name="%{BKY_CATLISTS}" colour="%{BKY_LISTS_HUE}">
+      <block type="lists_create_with">
+        <mutation items="0"></mutation>
+      </block>
+      <block type="lists_create_with"></block>
+      <block type="lists_repeat">
+        <value name="NUM">
+          <shadow type="math_number">
+            <field name="NUM">5</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="lists_length"></block>
+      <block type="lists_isEmpty"></block>
+      <block type="lists_indexOf">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">{listVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_getIndex">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">{listVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_setIndex">
+        <value name="LIST">
+          <block type="variables_get">
+            <field name="VAR">{listVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_getSublist">
+        <value name="LIST">
+          <block type="variables_get">
+            <field name="VAR">{listVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_split">
+        <value name="DELIM">
+          <shadow type="text">
+            <field name="TEXT">,</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="lists_sort"></block>
+    </category>
+    <category name="%{BKY_CATCOLOUR}" colour="%{BKY_COLOUR_HUE}">
+      <block type="colour_picker"></block>
+      <block type="colour_random"></block>
+      <block type="colour_rgb">
+        <value name="RED">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+        <value name="GREEN">
+          <shadow type="math_number">
+            <field name="NUM">50</field>
+          </shadow>
+        </value>
+        <value name="BLUE">
+          <shadow type="math_number">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="colour_blend">
+        <value name="COLOUR1">
+          <shadow type="colour_picker">
+            <field name="COLOUR">#ff0000</field>
+          </shadow>
+        </value>
+        <value name="COLOUR2">
+          <shadow type="colour_picker">
+            <field name="COLOUR">#3333ff</field>
+          </shadow>
+        </value>
+        <value name="RATIO">
+          <shadow type="math_number">
+            <field name="NUM">0.5</field>
+          </shadow>
+        </value>
+      </block>
+    </category>
+    <sep></sep>
+    <category name="%{BKY_CATVARIABLES}" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
+    <category name="%{BKY_CATFUNCTIONS}" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE"></category>
+-->
+    <category name="DoBot" colour="%{BKY_VARIABLES_HUE}">
+    <block type="setptpcommand"></block>
+    <block type="togglesuctioncommand"></block>
+  </category>
+  </xml>
+
+</body>
+</html>

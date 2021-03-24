@@ -1,0 +1,31 @@
+<launch>
+
+  <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="ns_uno" default="arduino_conveyor"/>
+  <arg name="ns_nano" default="arduino_sensor"/>
+
+	<arg name="ns_rfid_uno" default="arduino_rfid"/>
+  <arg name="usbPortUno" default="/dev/ttyACM0"/>
+  <arg name="usbPortNano" default="/dev/ttyUSB0"/>
+  <arg name="usbPortRFIDUno" default="/dev/ttyACM2"/>
+
+	
+  <node name="serial_node_rfid" pkg="rosserial_python" type="serial_node.py" ns="$(arg ns_rfid_uno)" output="screen" args="$(arg usbPortRFIDUno)">
+	<remap from="/GetRFIDUID" to="/$(arg ns_rfid_uno)/GetRFIDUID"/>
+	<remap from="/DobotToolCollision" to="/$(arg ns_rfid_uno)/DobotToolCollision"/>
+  </node>
+
+	
+  <node name="serial_node_conveyor" pkg="rosserial_python" type="serial_node.py" ns="$(arg ns_uno)" output="screen" args="$(arg usbPortUno)">
+    <remap from="/GetInfraredSensorBlocked" to="/$(arg ns_uno)/GetInfraredSensorBlocked"/>
+    <remap from="/SetConveyorbeltSpeed" to="/$(arg ns_uno)/SetConveyorbeltSpeed"/>
+    <remap from="/GetConveyorbeltSpeed" to="/$(arg ns_uno)/GetConveyorbeltSpeed"/>
+  </node>
+
+  <node name="serial_node_sensor" pkg="rosserial_python" type="serial_node.py" ns="$(arg ns_nano)" output="screen" args="$(arg usbPortNano)">
+      <remap from="/GetRGBColor" to="/$(arg ns_nano)/GetRGBColor"/>
+      <remap from="/GetDistanceSensorRight" to="/$(arg ns_nano)/GetDistanceSensorRight"/>
+      <remap from="/GetDistanceSensorLeft" to="/$(arg ns_nano)/GetDistanceSensorLeft"/>
+  </node>
+
+</launch>

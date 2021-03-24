@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="dobot_functions">
+	<xacro:include filename="$(find dobot_description)/urdf/dobot_parameters.xacro" />
+	<!-- Defining usefull macros -->
+	
+	<!-- shortcut to set inertia parameter, if you have a cylinder. -->
+	<xacro:macro name="cylinder_inertia" params="m r l">
+		<inertia ixx="${m*((r*r)+((l*l)/3.0))/4.0}" ixy="0" ixz="0" iyy="${m*((r*r)+((l*l)/3.0))/4.0}" iyz="0" izz="${m*(r*r)/2}" />
+	</xacro:macro>
+	
+	<!-- shortcut to set inertia parameter, if you have a box. -->
+	<xacro:macro name="box_inertia" params="m x y z">
+		<inertia ixx="${(m/12)*((y*y) + (z*z))}" ixy="0" ixz="0" iyy="${(m/12)*((x*x) + (z*z))}" iyz="0" izz="${(m/12)*((y*y) + (x*x))}" />
+	</xacro:macro>
+	
+	<xacro:macro name="create_transportbelt" params="prefix x y z rot pitch yaw belt_collide_bits">
+		<link name="${prefix}_transportbelt">
+			<inertial>
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<mass value="0.01" />
+				<xacro:box_inertia m="0.01" x="0.18" y="0.04" z="0.04"/>
+			</inertial>
+			<collision name="${prefix}_transportbelt_colli_mid">
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<geometry>
+					<box size="0.136 0.03 0.06454" /> <!-- 0.136 0.04 0.047 | 0.35275 0.04 0.047 -->
+				</geometry>
+			</collision>
+			<collision name="${prefix}_transportbelt_colli_front">
+				<origin rpy="${PI_2} 0 0" xyz="0.068 0 0" />
+				<geometry>
+					<cylinder radius="0.03227" length="0.03" />
+				</geometry>
+			</collision>
+			<collision name="${prefix}_transportbelt_colli_back">
+				<origin rpy="${PI_2} 0 0" xyz="-0.068 0 0" />
+				<geometry>
+					<cylinder radius="0.03227" length="0.03" />
+				</geometry>
+			</collision>
+			<visual name="transportbelt_vis">
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<geometry>
+					<mesh filename="package://ki4as_description/meshes/belt.dae" scale="1 1 1" />
+				</geometry>
+			</visual>
+			<visual name="transportbelt_vis_front">
+				<origin rpy="0 0 0" xyz="0.068 0 0" /> <!-- 0.068 0 0 | 0.176375 0 0-->
+				<geometry>
+					<mesh filename="package://ki4as_description/meshes/gear.dae" scale="1 1 1" />
+				</geometry>
+			</visual>
+			<visual name="transportbelt_vis_back">
+				<origin rpy="0 0 0" xyz="-0.068 0 0" /> <!-- -0.068 0 0 | 0.176375 0 0-->
+				<geometry>
+					<mesh filename="package://ki4as_description/meshes/gear.dae" scale="1 1 1" />
+				</geometry>
+			</visual>
+			<gazebo reference="${prefix}_transportbelt">
+				<kp>1000000.0</kp>
+				<kd>1.0</kd>
+				<mu1>10000.0</mu1>
+				<mu2>10000.0</mu2>
+				<minDepth>0.001</minDepth>
+			</gazebo>
+		</link>
+		
+		<joint name="${prefix}_transportbelt_joint" type="fixed">
+			<parent link="base_link" />
+			<child link="${prefix}_transportbelt" />
+			<origin xyz="${x} ${y} ${z}" rpy="${rot} ${pitch} ${yaw}" />
+		</joint>
+		<gazebo>
+			<plugin name="ODEConveyorBelt_${prefix}" filename="libODEConveyorBeltPlugin.so">
+				<robot_base_frame>base_link</robot_base_frame>
+				<command_topic>${prefix}_transportbelt/command</command_topic>
+				<robot_namespace>ki4as</robot_namespace>
+				<track_mu>2.0</track_mu>
+				<track_mu2>0.5</track_mu2>
+				<update_rate>50</update_rate>
+				<belt_collide_bits>${belt_collide_bits}</belt_collide_bits>
+				<belt_tag>${prefix}_transportbelt_colli</belt_tag>
+			</plugin>
+		</gazebo>
+	</xacro:macro>
+</robot>

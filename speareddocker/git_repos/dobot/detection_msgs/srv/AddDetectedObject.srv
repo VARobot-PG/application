@@ -1,0 +1,5 @@
+DetectedObject obj
+string frame_id
+time timestamp
+---
+bool success

@@ -1,0 +1,18 @@
+<launch>
+
+	 <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch">
+	 	<arg name="base_name" default="kinect2_jetson"/>
+	 	<arg name="fps_limit" default="3.0"/>
+	 	<arg name="calib_path" default="$(find detection)/calibration/"/>
+	 	<arg name="max_depth" default="3.0"/>
+	 	<arg name="publish_tf" default="false"/>
+	 	<arg name="base_name_tf" default="kinect2_jetson"/>
+	 </include>
+
+  <node name="tfPublisher" pkg="detection" type="tfPublisher" args="" respawn="false" output="screen">
+  </node>
+  
+  <node name="medianFilterServer_jetson" pkg="detection" type="medianFilterServer" args="kinect2_jetson" respawn="false" output="screen">
+  </node>
+  
+</launch>

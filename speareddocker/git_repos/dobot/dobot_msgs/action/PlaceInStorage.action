@@ -1,0 +1,10 @@
+#goal
+geometry_msgs/Point position
+float32 rotation
+---
+#result definition
+bool success
+---
+#feedback 
+std_msgs/String comment
+float32 progress

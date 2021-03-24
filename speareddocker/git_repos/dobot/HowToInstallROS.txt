@@ -1,0 +1,71 @@
+#INSTALLATION OF ROS WITH GAZEBO:
+#install ros and gabezbo:
+sudo apt-get install ros-kinetic-desktop-full
+#install ros-control for using motors:
+sudo apt-get install ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-ros-control
+#install the joint effort controller:
+sudo apt-get install ros-kinetic-effort-controllers
+#install the joint state publisher:
+sudo apt-get install ros-kinetic-joint-state-controller
+#open the file "~/.bashrc".
+#the last lines should contain: "source /opt/ros/kinetic/setup.bash" and "source ~/ros/devel/setup.bash".
+#this sets the ros environment variables, so that you can use ros commands in the terminal.
+
+#INSTALL GAZEBO8:
+#follow: https://github.com/CentroEPiaggio/iliad_wiki/wiki/1.-ROS-Kinetic-and-Gazebo8-setup
+
+add osrf to your sources list:
+#sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-latest.list'
+#sudo apt-get remove ros-kinetic-desktop-full
+#sudo apt-get remove ros-kinetic-gazebo*
+#sudo apt-get upgrade
+#sudo apt-get install ros-kinetic-gazebo8*
+
+#sudo apt-get install ros-kinetic-ros-base
+#sudo apt-get install ros-kinetic-catkin
+#sudo apt-get install rviz
+#sudo apt-get install ros-kinetic-controller-manager ros-kinetic-joint-state-controller ros-kinetic-joint-trajectory-controller ros-kinetic-rqt ros-kinetic-rqt-controller-manager ros-kinetic-rqt-joint-trajectory-controller ros-kinetic-ros-control ros-kinetic-rqt-gui
+#sudo apt-get install ros-kinetic-gazebo8-ros ros-kinetic-kdl-conversions ros-kinetic-kdl-parser ros-kinetic-forward-command-controller ros-kinetic-tf-conversions ros-kinetic-xacro ros-kinetic-joint-state-publisher ros-kinetic-robot-state-publisher 
+
+#INSTALLING BLENDER:
+#to install blender, you should NOT use "sudo apt-get install blender". This will install a lower version. Instead do the following:
+#download blender for ubuntu from: "https://ftp.halifax.rwth-aachen.de/blender/release/"
+#place the extracted folder into "~/bin"
+#open the file "~/.profile"
+#add the following line in the end, to add the downloaded blender folder to the environment path: 
+PATH+="$HOME/bin/blender-2.79a/"
+
+#CREATING A ROS PACKAGE:
+#go to "~/ros/src/".
+#add a folder with the desired package name. Please use a easy to understand, but also specific name.
+#now add a CmakeLists.txt inside your new folder. This allows compiling your c++ code.
+#if you need to write a c++ program, you should read: "http://wiki.ros.org/catkin/CMakeLists.txt".
+#if you do not want to program, keep this file empty.
+#write your .cpp files into "~/ros/src/YOUR_PACKAGE_NAME/src/".
+#write your .h files into "~/ros/src/YOUR_PACKAGE_NAME/include/".
+#also add the file "package.xml" to your package folder. Follow the instructiosn from "http://wiki.ros.org/catkin/package.xml".
+#now go to ~/ros/ and delete the "devel" and "build" folder.
+#Now you have to use some commands, while you are in the ~/ros/ folder.
+#build your project and files. This will create a new "devel" and "build" folder.
+catkin_make
+#If you do not build the "devel" and "build" folder, ros will be unable to find your package. 
+#You might need to restart the terminal, if ros is unable to find your package.
+
+#Eclipse load the rospackages:
+#start eclipse and use any workspace you want
+#File->import->Existing Projects into Workspace
+#Select ~/ros as root directory and do not enable "copy projects into workspace"
+
+#Eclipse Include Paths. You do not need this to compile the code, it is only to have a working indexer in eclipse.
+#go to ProjectProperties->C/C++ General/Paths and Symbols->Includes->GNU C++
+#add the following includes:
+/usr/include/sdformat-5.3
+/usr/include/boost
+/usr/include/gazebo-8
+/opt/ros/kinetic/include
+/home/philipf/Downloads/gazebo8_4/plugins
+/usr/include/c++/5.4.0
+#The next includes were uses for the belt plugin. I downloaded the gazebo source files for this. 
+/home/philipf/Downloads/gazebo8_4/deps/opende/include
+/home/philipf/Downloads/gazebo8_4/deps/opende/src
+/home/philipf/Downloads/gazebo8_4/deps/threadpool

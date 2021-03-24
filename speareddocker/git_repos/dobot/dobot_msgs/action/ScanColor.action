@@ -1,0 +1,12 @@
+#goal
+float32 rotation
+---
+#result definition
+bool success
+uint8 r
+uint8 g
+uint8 b
+---
+#feedback 
+std_msgs/String comment
+float32 progress

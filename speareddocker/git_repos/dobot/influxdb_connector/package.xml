@@ -1,0 +1,23 @@
+<package format="2">
+  <name>influxdb_connector</name>
+  <version>0.0.1</version>
+  <description>
+  Connector to influxdb.
+  </description>
+  <maintainer email="speeters@mail.uni-paderborn.de">Sven Peeters</maintainer>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>dobot_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf</depend>
+  <depend>sensor_msgs</depend>
+  <depend>arduino_msgs</depend>
+  <depend>restcpp</depend>
+  <depend>influxdb_cpp</depend>
+  <depend>dobot</depend>
+</package>

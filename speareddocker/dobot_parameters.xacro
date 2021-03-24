@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="dobot_parameters">
+	<!-- Main Parameters -->
+	<xacro:property name="PI" value="3.1415926535897931" />
+	<xacro:property name="PI_2" value="1.57079632679" />
+	<xacro:property name="PI_4" value="0.78539816339" />
+	<xacro:property name="track_distance" value="0.14" />
+	<xacro:property name="DobotName" value="$(arg prefix)"/>
+</robot>
+	
