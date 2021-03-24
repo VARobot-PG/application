@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/NXTBluetoothPlugin.iml" filepath="$PROJECT_DIR$/.idea/modules/NXTBluetoothPlugin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/NXTBluetoothPlugin.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/NXTBluetoothPlugin.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Android_Studio_Project.NXTBluetoothPlugin.iml" filepath="$PROJECT_DIR$/.idea/modules/Android_Studio_Project.NXTBluetoothPlugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Android_Studio_Project.NXTBluetoothPlugin.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Android_Studio_Project.NXTBluetoothPlugin.app.iml" />
     </modules>
   </component>
 </project>

@@ -71,10 +71,10 @@ namespace GoogleARCore.Examples.AugmentedImage
         public void Update()
         {
             // Exit the app when the 'back' button is pressed.
-            if (Input.GetKey(KeyCode.Escape))
+            /*if (Input.GetKey(KeyCode.Escape))
             {
                 Application.Quit();
-            }
+            }*/
 
             // Only allow the screen to sleep when not tracking.
             if (Session.Status != SessionStatus.Tracking)

@@ -13,7 +13,8 @@ public class ChooseRobotControl : MonoBehaviour
 
     public void NewRobotUnitySimulationScene()
     {
-        SceneManager.LoadScene("NXTBluetoothConnection");
+          SceneManager.LoadScene("NXTBluetoothConnection");
+        //SceneManager.LoadScene("NewRobotUnitySimulationScene");
     }
 
     public void GrabAndDropUnitySimulationScene()

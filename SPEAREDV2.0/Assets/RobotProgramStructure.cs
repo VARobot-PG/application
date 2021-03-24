@@ -3,13 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class RobotProgramStructure
+public class RobotProgramStructure : MonoBehaviour
 {
-    
+
     public Program sampleProgram;
+    public Transform nxtTransform;
     /*
      * // Example ROS Cube 132.073, 732.953, 63.937
      * ToggleSuction(True);
+SetPTPCmdRequest(1,80,2,156,5,59,8,0,True);
+SetPTPCmdRequest(1,133,4,174,3,0,0,True);
+SetPTPCmdRequest(1,132,2,171,6,86,8,0,True);
+ToggleSuction(False);
+*/
+    /*
+   * // Example ROS Cube 132.073, 732.953, 63.937
+   * ToggleSuction(True);
 SetPTPCmdRequest(1,80,2,156,5,59,8,0,True);
 SetPTPCmdRequest(1,133,4,174,3,0,0,True);
 SetPTPCmdRequest(1,132,2,171,6,86,8,0,True);
@@ -56,23 +65,27 @@ ToggleSuction(False);
             toggleSuction.isSuctionEnabled = false;
             statements.Add(toggleSuction);  
         }
+      
+        /*
         else
         {
             //Generate a ClawUp command below
             ClawUp clawUp = new ClawUp();
             Debug.Log("ClawUp is being tried to create!");
+
+            statements = newMovementCommand(new Vector3(0.6f, 0f, 0f), new MoveToJ(), statements);
             clawUp.isClawUp = true;
             statements.Add(clawUp);
-            statements = newMovementCommand(dobotCoordsAboveCube, new MoveToJ1(), statements);
-            statements = newMovementCommand(dobotCoordsCube, new MoveToJ1(), statements);
-            //Generate a Brute Move command below
-            statements = bruteMoveCommand(nxtCoordsBrute, new BruteMoveToJ1(), statements);
+            statements = newMovementCommand(new Vector3(1.1f, 0f, 0f), new MoveToJ(), statements);
             //Generate a ClawUp command below
             clawUp = new ClawUp();
             Debug.Log("ClawUp is being tried to create!");
             clawUp.isClawUp = false;
             statements.Add(clawUp);
+            statements = newMovementCommand(new Vector3(0.9f, 0f, -0.4f), new MoveToJ(), statements);
+
         }
+        */
         /*
          * not possible
          *  0 24 0
@@ -80,22 +93,22 @@ ToggleSuction(False);
          * 
          * 
          */
-         /*
-        statements = newMovementCommand(dobotCoords10, new MoveToJ(), statements);
-        statements = newMovementCommand(dobotCoords5, new MoveToJ(), statements);
-        statements = newMovementCommand(dobotCoords3, new MoveToJ(), statements);
-        statements = newMovementCommand(dobotCoords8, new MoveToJ(), statements);
-        statements = newMovementCommand(dobotCoords13, new MoveToJ(), statements);
-        statements = newMovementCommand(dobotCoords1, new MoveToJ(), statements);
-        statements = newMovementCommand(dobotCoords6, new MoveToJ(), statements);
-        statements = newMovementCommand(dobotCoords12, new MoveToJ(), statements);
-        */
+        /*
+       statements = newMovementCommand(dobotCoords10, new MoveToJ(), statements);
+       statements = newMovementCommand(dobotCoords5, new MoveToJ(), statements);
+       statements = newMovementCommand(dobotCoords3, new MoveToJ(), statements);
+       statements = newMovementCommand(dobotCoords8, new MoveToJ(), statements);
+       statements = newMovementCommand(dobotCoords13, new MoveToJ(), statements);
+       statements = newMovementCommand(dobotCoords1, new MoveToJ(), statements);
+       statements = newMovementCommand(dobotCoords6, new MoveToJ(), statements);
+       statements = newMovementCommand(dobotCoords12, new MoveToJ(), statements);
+       */
         //statements = newCommand(dobotCoords2, new MoveToJ(), statements);
         //statements = newCommand(dobotCoords9, new MoveToJ(), statements);
         //statements = newCommand(dobotCoords4, new MoveToJ(), statements);
         //statements = newCommand(dobotCoords7, new MoveToJ(), statements);
         //statements = newCommand(dobotCoords11, new MoveToJ(), statements);
-        
+
         this.sampleProgram.statements = statements;
     }
     private List<Statement> newMovementCommand(Vector3 target, MoveStatement statement, List<Statement> statements)

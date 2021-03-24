@@ -7,6 +7,7 @@ public class ClawControl : MonoBehaviour
     public enum clawpositions { UP, DOWN, INBETWEEN};   /* The positions the claw can be in, for easy external readability */
 
     public clawstates clawstate = clawstates.MOVEUP;    /* The current movement state of the claw */
+    public clawpositions clawposition;    /* The current position of the claw (f´for debugging)*/
     public int motorForce = 10;                         /* The force the morot can use to move the claw, must be adjusted on size changes due to different claw weight */
     public int motorTargetVelocity = 10;                /* The speed the claw should have when moving */
     private JointMotor motor;                           /* The morot moving the claw (is a feature of the hingejoint attaching it to the rest of the robot */
@@ -34,11 +35,11 @@ public class ClawControl : MonoBehaviour
                 setMotor(0,motorForce*10);
                 break;*/
             case clawstates.MOVEDOWN:
-                Debug.Log("MOVEDOWN");
+                //Debug.Log("MOVEDOWN");
                 setMotor(motorTargetVelocity, motorForce);
                 break;
             case clawstates.MOVEUP:
-                Debug.Log("MOVEUP");
+                //Debug.Log("MOVEUP");
                 setMotor(-motorTargetVelocity, motorForce);
                 break;
         }
@@ -70,7 +71,7 @@ public class ClawControl : MonoBehaviour
         }
         else
         {
-            if(this.transform.localEulerAngles.x >= 336f)
+            if(this.transform.localEulerAngles.x >= 335f)
             {
                 return clawpositions.DOWN;
             }

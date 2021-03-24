@@ -5,39 +5,13 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.LongDef;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.unity3d.player.UnityPlayer;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.bluetooth.RemoteDevice;
-
-import lejos.nxt.Motor;
-import lejos.nxt.comm.BTConnection;
-import lejos.nxt.comm.Bluetooth;
-import lejos.pc.comm.NXTCommLogListener;
-import lejos.pc.comm.NXTConnector;
-import lejos.pc.tools.NXTNotFoundException;
-import lejos.pc.tools.Upload;
-import lejos.robotics.RegulatedMotor;
-import lejos.robotics.localization.OdometryPoseProvider;
-import lejos.robotics.navigation.ArcRotateMoveController;
-import lejos.robotics.navigation.DifferentialPilot;
-
-import lejos.robotics.navigation.Pose;
-import lejos.util.Delay;
-import lejos.util.PilotProps;
 
 
 public class NXTManager
@@ -46,6 +20,9 @@ public class NXTManager
 
     public static String scriptLocation = "NXTManager";
     public static String deviceName = "NXT";
+
+    public int finalRobotPositionX = 0;
+    public int finalRobotPositionY = 0;
 
     private Context context;
     private Activity activity;
@@ -191,34 +168,26 @@ public class NXTManager
 
 
     ArrayList<Float> commandsToNavigateNxtRobot = new ArrayList();
-    ArrayList<Float> commandsToNavigateNxtRobotCheck = new ArrayList();
 
 
     public void navigateNXTRobot() throws IOException {
         //TODO: Move the robot here --> use arraylist
 
-
-//        commandsToNavigateNxtRobotCheck.add((float) CommandType.MOVE.ordinal());
-//        commandsToNavigateNxtRobotCheck.add(20.00f);
-//        commandsToNavigateNxtRobotCheck.add(0.00f);
-//        commandsToNavigateNxtRobotCheck.add((float) CommandType.CLAW_UP.ordinal());
-//
-//        commandsToNavigateNxtRobotCheck.add((float) CommandType.MOVE.ordinal());
-//        commandsToNavigateNxtRobotCheck.add(20.00f);
-//        commandsToNavigateNxtRobotCheck.add(-20.00f);
-//
-//        commandsToNavigateNxtRobotCheck.add((float) CommandType.CLAW_DOWN.ordinal());
-//
-//        commandsToNavigateNxtRobotCheck.add((float) CommandType.END.ordinal());
-
+        Log.d("UNITY NXT: ", "final size: " + commandsToNavigateNxtRobot.size());
         for(float value: commandsToNavigateNxtRobot){
+            Log.d("UNITY NXT: ", "Value in the list: "+ value);
             BluetoothConnection.dataOutputStream.writeFloat(value);
             BluetoothConnection.dataOutputStream.flush();
         }
 
+        commandsToNavigateNxtRobot.clear();
         if(BluetoothConnection.dataOutputStream == null){
             Log.d("NXT Bluetooth: ", "NO OUTPUT STREAM");
         }
+    }
+
+    public void resetNXTPos(){
+        commandsToNavigateNxtRobot.add((float) CommandType.RESET.ordinal());
     }
 
     public void sendClawCommandToNxt(String commandType){
@@ -230,12 +199,35 @@ public class NXTManager
         }
     }
 
+    public void moveNXTBack(float x, float z){
+        commandsToNavigateNxtRobot.add((float) CommandType.BACK.ordinal());
+
+        Log.d("NXT Bluetooth: " , "BACK");
+        Log.d("NXT Bluetooth", "x: " + x );
+        Log.d("NXT Bluetooth", "z: " + z);
+
+        commandsToNavigateNxtRobot.add(x);
+        commandsToNavigateNxtRobot.add(z);
+    }
+
+    // ADDITIONAL CHANGES - BEGIN //
+    private float[][] translationAndRotationMatrixCreator(float x, float y, float angleOfRobot){
+
+        float[][] translationRotationMatrix = {
+                {(float) Math.cos(angleOfRobot), -((float) Math.sin((float) angleOfRobot)) , 0},
+                {(float) Math.sin(angleOfRobot), ((float) Math.cos((float) angleOfRobot)) , 0},
+                {x , y , 1}
+        };
+
+        return translationRotationMatrix;
+    }
+    // ADDITIONAL CHANGES - END//
+
+
     public void sendCoordsToNXT(float x , float z){
 
         try {
-            //BluetoothConnection.dataOutputStream.writeInt(INPUT_COMMAND_MOVE);
             commandsToNavigateNxtRobot.add((float) CommandType.MOVE.ordinal());
-            //BluetoothConnection.dataOutputStream.flush();
 
             Log.d("NXT Bluetooth: " , "MOVE");
             Log.d("NXT Bluetooth", "x: " + x );
@@ -243,10 +235,6 @@ public class NXTManager
 
             commandsToNavigateNxtRobot.add(x);
             commandsToNavigateNxtRobot.add(z);
-//            BluetoothConnection.dataOutputStream.writeFloat(x);
-//            BluetoothConnection.dataOutputStream.flush();
-//            BluetoothConnection.dataOutputStream.writeFloat(z);
-//            BluetoothConnection.dataOutputStream.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -287,102 +275,5 @@ public class NXTManager
             UnityPlayer.UnitySendMessage(scriptLocation, "throwAlertUpdate", "Error: " + ex.getMessage());
         }
     }
-//
-//    public void sendCodeToNXT(String filePath){
-//        Log.d("Unity Path Send Code: ",filePath);
-//
-//        File folder = new File(filePath);
-//
-//        if(!folder.exists()){
-//            Log.d("Unity: ","Folder being created.");
-//            folder.mkdir();
-//        }
-//
-//        Log.d("Unity: ","Folder exists.");
-//        String myFile = filePath + "/HalloWelt.nxj";
-//        String all = "";
-//
-//        Log.d("Unity: ", myFile);
-//
-//        if(!new File(myFile).exists())
-//            Log.d("Unity: ", "File not found.");
-//
-//        try{
-//            BufferedReader bufferedReader = new BufferedReader(new FileReader(myFile));
-//            String strLine="";
-//
-//            while((strLine = bufferedReader.readLine()) != null){
-//                all = all + strLine;
-//            }
-//            Log.d("Unity ALL:" , all );
-//
-//            File file = new File(myFile);
-//
-//            ////////////////////////////////////////////////////////////
-//            NXTConnector nxtConnector = new NXTConnector();
-//
-//            nxtConnector.addLogListener(new NXTCommLogListener() {
-//                @Override
-//                public void logEvent(String s) {
-//                    Log.d("Unity: ", "Bluetooth Send Log.listener: " + s);
-//                }
-//
-//                @Override
-//                public void logEvent(Throwable throwable) {
-//                    Log.d("Unity: ", "Bluetooth Send Stack Trace: ");
-//                    throwable.printStackTrace();
-//                }
-//            });
-//
-//            boolean connected = nxtConnector.connectTo("btspp://");
-//
-//            if(!connected){
-//                Log.d("Unity: ", "NXTConnector: Failed to connect to any NXT");
-//            }
-//            else {
-//                Log.d("Unity: ", "NXTConnector: Connected to NXT");
-//            }
-//
-//
-//            //NOT SO GREAT FROM HERE -- YET TO BE CHECKED
-//            RemoteDevice nxtRobot = Bluetooth.getKnownDevice(deviceName);
-//
-//            if(nxtRobot == null){
-//                Log.d("Unity: ", " Remote Device: No such NXT Device");
-//            }
-//            BTConnection btConnection = Bluetooth.connect(nxtRobot);
-//
-//            if(!(btConnection == null)){
-//                Log.d("Unity: ", "RemoteDevice: Connected to NXT");
-//            }
-//            else{
-//                Log.d("Unity: ", "RemoteDevice: NOT Connected to NXT");
-//            }
-//
-//            /////////////////////////////////////////////////////////
-//            Upload upload = new Upload();
-//
-//            String deviceAddress = "";
-//            Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-//
-//             for(BluetoothDevice device: pairedDevices){
-//               if(device.getName().equals(deviceName)){
-//                   deviceAddress = device.getAddress();
-//                   break;
-//               }
-//             }
-//
-//             upload.upload(deviceName, deviceAddress, 2, file, "Hallo Welt", true);
-//
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//            Log.d("Unity: ", "File in internal storage not found.");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Log.d("Unity: ", "File in internal storage can not be read.");
-//        } catch (NXTNotFoundException e) {
-//            Log.d("Unity: ", e.getMessage());
-//            Log.d("Unity:" , "Upload to NXT Failed.");
-//        }
-//    }
+
 }

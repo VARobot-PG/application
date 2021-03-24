@@ -3,50 +3,70 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class DragOnFloorReciever : MonoBehaviour
 {
     public GameObject targetSelectorPrefab;
     public InputField textField; //the text field where the coordinates should be
     public TextMeshPro text;
+    float height;
 
     private GameObject selector;
-    bool currentlySelecting = false;
     public void onClickUseTargetSelector()
     {
         //if (!currentlySelecting) {
-            currentlySelecting = true;
 
-            /*Vector3 textVector = new Vector3(0, 0, 0);
+        /*Vector3 textVector = new Vector3(0, 0, 0);
 
-            if(textField != null)
+        if(textField != null)
+        {
+            //Text t = FindText();
+            string t = textField.text;
+            Debug.Log(t.ToString());
+            textVector = StringToVector3(t);
+        }
+        else
+        {
+            //Text t = FindText();
+            string t = text.text;
+            Debug.Log(t.ToString());
+            textVector = StringToVector3(t); ;
+        }*/
+
+
+        if (GameObject.Find("Plane_") != null)
+        {
+            height = GameObject.Find("Plane_").transform.position.y;
+        }
+        else
+        {
+            if (GameObject.Find("Plane") != null)
             {
-                //Text t = FindText();
-                string t = textField.text;
-                Debug.Log(t.ToString());
-                textVector = StringToVector3(t);
+                height = GameObject.Find("Plane").transform.position.y;
             }
             else
             {
-                //Text t = FindText();
-                string t = text.text;
-                Debug.Log(t.ToString());
-                textVector = StringToVector3(t); ;
-            }*/
+                height = 0;
+            }
+        }
 
-            float height = GameObject.Find("Blue").transform.position.y;
+
         //GameObject gmo = Instantiate(targetSelectorPrefab, new Vector3(textVector.x, height, textVector.z), Quaternion.identity);
         //float height = 0.05f;
         if (selector == null)
         {
-            selector = Instantiate(targetSelectorPrefab, Camera.main.transform.position + Camera.main.transform.forward, Quaternion.identity);
+            selector = Instantiate(targetSelectorPrefab, Camera.main.transform.position + Camera.main.transform.forward*0.5f, Quaternion.identity);
             selector.GetComponent<DragOnFloor>().floorHeight = height;
+            selector.GetComponent<DragOnFloor>().selecting = true;
             //selector = gmo;
             Debug.Log(selector.name);
         }
         else
         {
-            selector.SetActive(true);
+            //selector.SetActive(true);
+            selector.GetComponent<DragOnFloor>().SetMaterialPurple();
+            selector.GetComponent<DragOnFloor>().selecting = true;
         }
         //}
         /*else
@@ -66,22 +86,48 @@ public class DragOnFloorReciever : MonoBehaviour
         }*/
     }
 
+    /* On each Update, get the selection sphere's position, convert it to robot coordinates and write it into the given text field (as long as the selector is selecting) */
     private void Update()
     {
+        Vector3 officialPosition = this.selector.transform.position;
+        if (this.selector != null)
+        {
+            Vector3 unityPosition = this.selector.transform.position;
+            GameObject zero = GameObject.Find("AbsoluteZero");
+            if (zero != null)
+            {
+                GameObject go = new GameObject("GO DragOnFloorReciever"); 
+                go.transform.position = unityPosition;
+                go.transform.parent = zero.transform;
+                Vector3 tmpPos = go.transform.localPosition;
+                officialPosition = new Vector3(tmpPos.z, tmpPos.y, tmpPos.x);
+                Destroy(go);
+            }
+            else
+            {
+                Debug.Log("AbsoluteZero not found");
+            }
+        }
+        
         if (textField != null)
         {
-            if (this.selector != null)
+            if (this.selector != null && selector.GetComponent<DragOnFloor>().selecting)
             {
-                textField.text = this.selector.transform.position.ToString("F1");
+                textField.text = officialPosition.ToString("F2");
             }
         }
         else
         {
-            if (text != null && this.selector != null)
+            if (text != null && this.selector != null && selector.GetComponent<DragOnFloor>().selecting)
             {
-                text.text = this.selector.transform.position.ToString("F1");
+                text.text = officialPosition.ToString("F2");
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(selector);
     }
 
     public static Vector3 StringToVector3(string sVector)

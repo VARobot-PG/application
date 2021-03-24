@@ -355,13 +355,14 @@ public class MovementController : MonoBehaviour
      */
     public void releaseUpdate()
     {
+        if (enableLoggingMessages) { Debug.Log("Claw Up, clawposition: "+claw.getClawPosition()); } 
         if (claw.getClawPosition() == ClawControl.clawpositions.DOWN || claw.getClawPosition() == ClawControl.clawpositions.INBETWEEN && claw.getState() != ClawControl.clawstates.MOVEUP)
         {
             claw.setState(ClawControl.clawstates.MOVEUP);
         }
         else
         {
-            if (claw.getClawPosition() == ClawControl.clawpositions.UP || !clicker.isPressed())
+            if (claw.getClawPosition() == ClawControl.clawpositions.UP)
             {
                 nextState();
             }

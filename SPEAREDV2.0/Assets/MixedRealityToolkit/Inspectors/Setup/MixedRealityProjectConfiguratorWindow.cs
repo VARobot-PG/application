@@ -84,7 +84,7 @@ namespace Microsoft.MixedReality.Toolkit.Utilities.Editor
             // There should be only one pop-up window which is generally tracked by IsOpen
             // However, when recompiling, Unity will call OnDestroy for this window but not actually destroy the editor window
             // This ensure we have a clean close on recompiles when this EditorWindow was open beforehand
-            Close();
+            //Close();
         }
 
         private void OnGUI()

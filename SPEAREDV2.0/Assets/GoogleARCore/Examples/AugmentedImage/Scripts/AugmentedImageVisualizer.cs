@@ -36,6 +36,8 @@ namespace GoogleARCore.Examples.AugmentedImage
         /// The AugmentedImage to visualize.
         /// </summary>
         public AugmentedImage Image;
+        public GameObject scenario;
+        public GameObject positioner;
 
         /// <summary>
         /// A model for the lower left corner of the frame to place when an image is detected.
@@ -62,12 +64,13 @@ namespace GoogleARCore.Examples.AugmentedImage
         /// </summary>
         public void Update()
         {
-            if (Image == null || Image.TrackingState != TrackingState.Tracking)
+            /*if (Image == null || Image.TrackingState != TrackingState.Tracking)
             {
                 FrameLowerLeft.SetActive(false);
                 FrameLowerRight.SetActive(false);
                 FrameUpperLeft.SetActive(false);
                 FrameUpperRight.SetActive(false);
+                scenario.SetActive(false);
                 return;
             }
 
@@ -86,6 +89,21 @@ namespace GoogleARCore.Examples.AugmentedImage
             FrameLowerRight.SetActive(true);
             FrameUpperLeft.SetActive(true);
             FrameUpperRight.SetActive(true);
+            //scenario.transform.localPosition = Image.CenterPose.position;
+            //scenario.transform.eulerAngles = new Vector3(0, scenario.transform.rotation.y, 0);
+            //scenario.transform.eulerAngles = new Vector3(0, scenario.transform.rotation.y, 0);
+            scenario.SetActive(true);
+            */
+            positioner.SetActive(true);
+            /*if (positioner.active && Image.TrackingState == TrackingState.Tracking)
+            {
+                GameObject scenario = GameObject.Find("scenario");
+                scenario.transform.position = positioner.transform.position;
+                scenario.transform.rotation = positioner.transform.rotation;
+                scenario.SetActive(true);
+                GameObject cube = GameObject.Find("Cube");
+                cube.SetActive(false);
+            }*/
         }
     }
 }

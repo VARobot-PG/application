@@ -4,5 +4,8 @@ public enum CommandType {
     MOVE,
     CLAW_UP,
     END,
-    CLAW_DOWN;
+    CLAW_DOWN,
+    RESET,
+    BACK,
+    LOCATION;
 }

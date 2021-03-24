@@ -48,7 +48,7 @@ public class NXTManager : MonoBehaviour
         Instance = this;
     }
 
-	void Start ()
+    void Start()
     {
         scriptLocation = gameObject.name;
 
@@ -57,8 +57,8 @@ public class NXTManager : MonoBehaviour
         activityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         activityContext = activityClass.GetStatic<AndroidJavaObject>("currentActivity");
 
-        
-        BluetoothUpdateEvent += 
+
+        BluetoothUpdateEvent +=
             NXTManager_BluetoothUpdateEvent;
 
 
@@ -83,12 +83,12 @@ public class NXTManager : MonoBehaviour
         if (autoEnableBT)
             nxtPlugin.CallStatic<bool>("autoEnableBT", true);
 
-        if(InitialiseOnStart)
+        if (InitialiseOnStart)
             nxtPlugin.Call("initialisePlugin");
 
     }
 
-   
+
 
     void Update()
     {
@@ -97,7 +97,7 @@ public class NXTManager : MonoBehaviour
 
     void OnDestroy()
     {
-        
+
         BluetoothUpdateEvent -=
            NXTManager_BluetoothUpdateEvent;
 
@@ -121,12 +121,13 @@ public class NXTManager : MonoBehaviour
     }
 
 
-    
-    public void SendCodeToNxt(){
+
+    public void SendCodeToNxt()
+    {
         //FILE I/O
-        
-        string myPath = Path.Combine(Application.persistentDataPath, "NxjFiles") ;
-        
+
+        string myPath = Path.Combine(Application.persistentDataPath, "NxjFiles");
+
         nxtPlugin.Call("sendCodeToNXT", myPath);
     }
 
@@ -139,13 +140,13 @@ public class NXTManager : MonoBehaviour
         InitialisePlugin();
     }
 
-    
+
     void throwAlertUpdate(string data)
     {
         if (GUIManager.Instance.DebugWindow != null)
             GUIManager.Instance.DebugWindow.text = data;
 
-        if(data.Equals("Connected to NXT"))
+        if (data.Equals("Connected to NXT"))
             SceneManager.LoadScene("NewRobotUnitySimulationScene");
     }
 
@@ -170,76 +171,103 @@ public class NXTManager : MonoBehaviour
     }
 
     // ===============================================================================================================================
-    // Control the NXT Robot if NewRobotUnitySimulationScene is active
+    // Control the NXT Robot in NewRobotUnitySimulationScene 
     // ===============================================================================================================================
 
     public GameObject codePanel;
     public string nxtText;
     public GameObject nxtRobot;
-   
+    float robotResetX = 0f;
+    float robotResetZ = 0f;
+    float moveToX = 0f;
+    float moveToZ = 0f;
 
-    public void sendCoordsToNXT(){
+    public void resetNXTPosition()
+    {
+        Debug.Log("UNITY NXT: Inside if loop --> reset NXT Button");
+        robotResetX = moveToX;
+        robotResetZ = moveToZ;
+        Debug.Log("UNITY NXT: Robot has moved to: " + robotResetX + " " + robotResetZ);
+        nxtPlugin.Call("resetNXTPos");
+    }
 
-        Vector3 positionRobot = nxtRobot.transform.position;
-        float xRobot = positionRobot.x;
-        float zRobot = positionRobot.z;
+    public void sendCoordsToNXT()
+    {
 
-        Debug.Log("position of robot: " + xRobot + " " + zRobot);
+
+       // robotResetX = nxtRobot.transform.position.x;
+        //robotResetZ = nxtRobot.transform.position.z;
+
+        Debug.Log("UNITY NXT position of robot: " + robotResetX + " " + robotResetZ);
 
         Debug.Log("in send coords to nxt");
 
-         if(nxtPlugin == null){
+        if (nxtPlugin == null)
+        {
             Debug.Log("no ref to nxtplugin");
         }
-        else{
-            Debug.Log("Sending hey");
-
+        else
+        {
             nxtText = codePanel.GetComponent<Text>().text;
 
-            string[] commands =  nxtText.Split('\n');
+            string[] commands = nxtText.Split('\n');
 
             foreach (string line in commands)
             {
-                if(line.Contains("Move")){
+                if (line.Contains("Move"))
+                {
                     string innerLine = line.Substring(28);
                     Debug.Log("NXT Bluetooth: Innerline " + innerLine);
 
                     innerLine = innerLine.Replace(");", "");
                     string[] coords = innerLine.Split();
 
-                    float x = float.Parse(coords[0]);
-                    float z = float.Parse(coords[2]);
+                    if (moveToX > robotResetX + (float.Parse(coords[0]) * 100))
+                    {
+                        nxtPlugin.Call("moveNXTBack", 20f, 0f);
+                    }
 
-                    //float array --> string in between --> or string commands as float values
+                    moveToX = robotResetX + (float.Parse(coords[0]) * 100);
+                    moveToZ = robotResetZ + (float.Parse(coords[2]) * 100);
 
-                    nxtPlugin.Call("sendCoordsToNXT", x - xRobot , z - zRobot);
+                    Debug.Log("UNITY: Move to: " + moveToX + " " + moveToX);
+
+                    nxtPlugin.Call("sendCoordsToNXT", moveToX, moveToZ);
                 }
 
-                if(line.Contains("Brute")){
+                if (line.Contains("Brute"))
+                {
                     string innerLine = line.Substring(29);
                     Debug.Log("NXT Bluetooth: Innerline " + innerLine);
 
                     innerLine = innerLine.Replace(");", "");
                     string[] coords = innerLine.Split();
 
-                    float x = float.Parse(coords[0]);
-                    float z = float.Parse(coords[2]);
+                    if (moveToX > robotResetX + (float.Parse(coords[0]) * 100))
+                    {
+                        nxtPlugin.Call("moveNXTBack", 20f, 0f);
+                    }
 
-                    //float array --> string in between --> or string commands as float values
+                    moveToX = robotResetX + (float.Parse(coords[0]) * 100);
+                    moveToZ = robotResetZ + (float.Parse(coords[2]) * 100);
 
-                    nxtPlugin.Call("sendCoordsToNXT", x - xRobot , z - zRobot);
+                    Debug.Log("UNITY: Brute to: " + moveToX + " " + moveToZ);
+                    nxtPlugin.Call("sendCoordsToNXT", moveToX, moveToZ);
                 }
 
-                if(line.Contains("Claw")){
-                    if(line.Contains("up")){
+                if (line.Contains("Claw"))
+                {
+                    if (line.Contains("up"))
+                    {
+                        //THE NAMES ARE REVERSED IN THE ANDROID PLUGIN --> CAN BE INTERCHANGED LATER TO CORRECT UP AND DOWN
                         nxtPlugin.Call("sendClawCommandToNxt", "CLAW_UP");
                     }
-                    if(line.Contains("down")){
+                    if (line.Contains("down"))
+                    {
                         nxtPlugin.Call("sendClawCommandToNxt", "CLAW_DOWN");
                     }
                 }
             }
-
             nxtPlugin.Call("navigateNXTRobot");
         }
     }

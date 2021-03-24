@@ -642,19 +642,22 @@ public class CodetoCanvasGenNew : MonoBehaviour
         {
             if (statement is MoveStatement1 moveStatement)
             {
-                float x = moveStatement.target.x;
-                float z = moveStatement.target.z;
+                //float x = moveStatement.target.x;
+                //float z = moveStatement.target.z;
 
                 stateList.Add(MovementController.states.MOVE);
-                values.Add(new Vector3(x, 0, z));
+                //values.Add(new Vector3(x, 0, z));
+                values.Add(fixRotation(moveStatement.target));
             }
             else if (statement is BruteMove bmoveStatement)
             {
-                float x = bmoveStatement.target.x;
-                float z = bmoveStatement.target.z;
+                //float x = bmoveStatement.target.x;
+                //float z = bmoveStatement.target.z;
 
                 stateList.Add(MovementController.states.BRUTEMOVE);
-                values.Add(new Vector3(x, 0, z));
+                //values.Add(new Vector3(x, 0, z));
+                values.Add(fixRotation(bmoveStatement.target));
+
             }
             else if (statement is ClawUp clawUpStatement)
             {
@@ -671,6 +674,27 @@ public class CodetoCanvasGenNew : MonoBehaviour
             }
         }
         movementController.simulateProgram(stateList, values);
+    }
+
+    /* Transforms rotation from robot coordinates back to unity coordinates (those are needed for the simulation)*/
+    public Vector3 fixRotation(Vector3 vector)
+    {
+        Vector3 officialPosition = vector;
+        Vector3 unityPosition = vector;
+        GameObject zero = GameObject.Find("AbsoluteZero");
+        if (zero != null)
+        {
+            GameObject go = new GameObject("GO CodeToCanvasGenNew");
+            go.transform.parent = zero.transform;
+            go.transform.localPosition = new Vector3(unityPosition.z, unityPosition.y, unityPosition.x);
+            officialPosition = go.transform.position;
+            Destroy(go);
+        }        
+        else
+        {
+            Debug.Log("AbsoluteZero not found");
+        }
+        return officialPosition;
     }
 }
 
