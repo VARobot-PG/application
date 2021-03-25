@@ -18,7 +18,7 @@ In this repository, we store the public versions of the application that was dev
 ## How to install the server
 To install the server consider the following repository: https://github.com/VARobot-PG/server
 It is needed for cloud compilation and physics simulation for the dobot magician system
-## Where can I find the original approach SPEARED1?
+## Where can I find the original approach SPEARED?
 You can find it on a special branch in this repository: 
 https://github.com/VARobot-PG/application/tree/SPEARED1
 (here is also the old version of the server and webeditor included)
