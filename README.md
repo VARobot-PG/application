@@ -1,4 +1,4 @@
-# SPEARED V2 (working title)
+# SPEARED2 (working title)
 In this repository, we store the public versions of the application that was developed in the VARobot project group. It is the followup work based on the mastertheses of Michael Wieneke and Jonas Eilers and their SPEARED Framework. More information about the project group you can find here: https://varobot-pg.github.io/. 
 ## prequisites
 - Unity 2019.3.0f6
